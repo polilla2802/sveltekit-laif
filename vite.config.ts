@@ -8,11 +8,11 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 const port = process.env.VITE_PORT ? parseInt(process.env.VITE_PORT) : 5173;
 
 export default defineConfig({
-    plugins: [sveltekit()],
-    server: {
-      port: port,
-    },
-    preview: {
-      port: port,
-    },
+  plugins: [sveltekit()],
+  server: {
+    port: port,
+  },
+  preview: {
+    port: port,
+  },
 });
