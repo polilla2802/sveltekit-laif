@@ -34,15 +34,9 @@
 
 <section class="md:hidden">
 	<button class="text-white menu-toggle" on:click={toggleMenu}>
-		{#if !isOpen}
-			<div class="icon-container">
-				<img src="/images/menu.png" alt="menu button" />
-			</div>
-		{:else}
-			<div class="icon-container">
-				<img src="/images/menu.png" alt="menu button" />
-			</div>
-		{/if}
+		<div class="icon-container">
+			<img src="/images/menu.png" alt="menu button" />
+		</div>
 	</button>
 
 	{#if isOpen}
