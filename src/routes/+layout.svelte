@@ -27,16 +27,5 @@
 	}
 
 	@media only screen and (max-width: 600px) {
-		main {
-			min-height: 80vh;
-		}
-
-		main section {
-			min-height: 80vh;
-		}
-
-		main section div {
-			min-height: 80vh;
-		}
 	}
 </style>
