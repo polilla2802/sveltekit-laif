@@ -1,0 +1,124 @@
+nav {
+	display: flex;
+	align-items: center;
+	font-weight: normal;
+	letter-spacing: 1.5px;
+	height: 10vh;
+	position: relative;
+}
+
+.menu-toggle {
+	position: relative;
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+
+.icon-container {
+	width: 42px;
+	height: 42px;
+}
+
+
+nav div {
+	text-decoration: none !important;
+	font-family: Nunito, sans-serif;
+}
+
+nav a {
+	text-decoration: none !important;
+	font-family: Nunito, sans-serif;
+}
+
+nav a:hover {
+	font-weight: bolder;
+}
+
+nav img {
+	position: absolute;
+	width: 100%;
+	height: auto;
+	right: -15%;
+	top: 0;
+	z-index: 0;
+}
+
+.active {
+	font-weight: bolder;
+}
+
+.active-lan {
+	font-weight: bolder;
+	border-bottom: 1px solid white;
+}
+
+.left a {
+	display: flex;
+	text-align: center;
+	width: min-content;
+	white-space: nowrap;
+	font-size: 1.2rem;
+}
+
+.left a + a {
+	margin-left: 3rem;
+}
+
+.smooth-underline {
+	position: relative;
+	text-decoration: none !important;
+}
+
+.smooth-underline::after {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 2px;
+	bottom: -5px;
+	left: 0;
+	background-color: currentColor;
+	transition: width 0.3s ease-in-out;
+}
+
+.smooth-underline:hover::after,
+.smooth-underline.active::after {
+	width: 70%;
+}
+
+@media only screen and (max-width: 1536px) {
+	.left a {
+		font-size: 1.2rem;
+	}
+
+	nav img {
+		right: -20%;
+	}
+}
+
+@media only screen and (max-width: 1280px) {
+	.left a + a {
+		margin-left: 2rem;
+	}
+
+	.left a {
+		font-size: 1rem;
+	}
+
+	nav img {
+		right: -20%;
+	}
+}
+
+@media only screen and (max-width: 1024px) {
+	.left a + a {
+		margin-left: 25px;
+	}
+
+	.left a {
+		font-size: 0.9rem;
+	}
+}
+
+@media only screen and (max-width: 768px) {
+
+}

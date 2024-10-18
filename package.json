@@ -28,8 +28,8 @@
 		"@tsconfig/svelte": "^5.0.4",
 		"@types/node": "^20.14.12",
 		"autoprefixer": "^10.4.19",
-		"firebase": "^10.12.4",
 		"dotenv-cli": "^7.4.2",
+		"firebase": "^10.12.4",
 		"postcss": "^8.4.39",
 		"prettier": "^3.3.3",
 		"prettier-plugin-svelte": "^3.2.6",
@@ -45,6 +45,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@iconify/svelte": "^4.0.2",
 		"@prisma/client": "^5.21.1",
 		"dotenv": "^16.4.5",
 		"npm": "^10.8.2"

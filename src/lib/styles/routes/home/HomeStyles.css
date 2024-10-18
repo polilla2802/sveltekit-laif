@@ -1,0 +1,38 @@
+section {
+	overflow: hidden;
+	min-height: 90vh;
+	padding-bottom: 5%;
+}
+
+.points-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 5px;
+	touch-action: none; /* Disable the default gestures */
+}
+
+.bg-web {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 120px;
+	height: auto;
+	z-index: 10;
+}
+
+.bg-mobile {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100px;
+	height: auto;
+	z-index: 10;
+}
+
+@media only screen and (max-width: 768px) {
+	section {
+		padding-bottom: 10%;
+	}
+}

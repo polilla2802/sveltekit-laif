@@ -1,14 +1,28 @@
 <script lang="ts">
+	import Header from '$lib/components/navigation/header/Header.svelte';
 	import '$lib/styles/app.css';
 </script>
 
-<div class="layout bg-primaryGreen text-white">
-	<section class="container mx-auto px-4 py-4 flex-1 flex-container">
-		<div class="slot-content h-full">
+<Header />
+
+<main class="text-white layout bg-primaryGreen">
+	<section class="container flex-1 h-full px-4 mx-auto flex-container">
+		<div class="h-full slot-content">
 			<slot />
 		</div>
 	</section>
-</div>
+</main>
 
 <style>
+	main {
+		min-height: 90vh;
+	}
+
+	main section {
+		min-height: 90vh;
+	}
+
+	main section div {
+		min-height: 90vh;
+	}
 </style>
