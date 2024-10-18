@@ -1,7 +1,11 @@
 section {
 	overflow: hidden;
 	height: 100%;
-	padding-bottom: 5%;
+}
+
+img {
+	width: 40vw;
+	height: auto;
 }
 
 .points-container {
@@ -33,7 +37,9 @@ section {
 }
 
 @media only screen and (max-width: 768px) {
-	section {
-		padding-bottom: 15%;
+
+	img {
+		width: 70vw;
+		height: auto;
 	}
 }

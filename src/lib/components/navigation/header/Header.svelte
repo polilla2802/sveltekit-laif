@@ -64,15 +64,6 @@
 				>
 					<ul class="items-start justify-between">
 						<div class="flex flex-col item-list">
-							<div class="flex justify-between gap-2 mt-3 mb-5 mr-0">
-								<div><p>Parque</p></div>
-								<div>
-									<button on:click={() => takeMeHome()}
-										><p class:active-lan={$page.url.pathname.includes('/es')}>Es</p></button
-									>
-								</div>
-								<div><p>Código</p></div>
-							</div>
 							<a
 								class:active={$page.url.pathname === '/explora'}
 								class="smooth-underline"

@@ -21,10 +21,11 @@
 	}
 </script>
 
-<section class="flex flex-col items-center justify-end h-full align-middle">
+<section class="flex flex-col items-center justify-between h-full py-10 align-middle">
+	<div class="space-y-24"></div>
 	<img class="hidden md:block bg-web" src="/images/bg-web.png" alt="bg-web" />
 	<img class="block bg-mobile md:hidden" src="/images/bg-mobile.png" alt="bg-web" />
-
+	<img src="/logos/laif-logo.png" alt="laif logo" />
 	<div class="points-container" on:touchstart={handleTouchStart} on:touchend={handleTouchEnd}>
 		<Icon width="32" height="42" icon="material-symbols-light:circle" style="color: white" />
 		<Icon width="22" height="32" icon="stash:circle-dot-duotone" style="color: white" />

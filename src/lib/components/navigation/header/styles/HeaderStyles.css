@@ -9,7 +9,7 @@
 
 .menu-toggle {
 	position: fixed;
-	top: 40px;
+	top: 60px;
 	right: 6%;
 	background: none;
 	border: none;
@@ -42,8 +42,8 @@
 }
 
 .icon-container {
-	width: 42px;
-	height: 42px;
+	width: 62px;
+	height: 62px;
 }
 
 ul {
@@ -63,8 +63,7 @@ ul {
 	-ms-overflow-style: none; /* IE and Edge */
 	scrollbar-width: none; /* Firefox */
 	min-width: 40vw;
-	padding: 20px;
-	padding-bottom: 100px;
+	padding: 40px;
 	border-radius: 0px 50px 0px 0px;
 	box-shadow: 2px 0px #888888;
 	background: black;
@@ -77,11 +76,6 @@ ul {
 
 .active {
 	font-weight: bolder;
-}
-
-.active-lan {
-	font-weight: bolder;
-	border-bottom: 1px solid white;
 }
 
 .smooth-underline {
@@ -104,11 +98,6 @@ ul {
 .smooth-underline.active::after {
 	height: 2px;
 	bottom: -20px;
-}
-
-.icon-container {
-	width: 42px;
-	height: 42px;
 }
 
 .top-nav div {
@@ -134,14 +123,6 @@ ul {
 	z-index: 0;
 }
 
-.active {
-	font-weight: bolder;
-}
-
-.active-lan {
-	font-weight: bolder;
-	border-bottom: 1px solid white;
-}
 
 @media only screen and (max-width: 1536px) {
 	.top-nav img {
@@ -162,4 +143,14 @@ ul {
 	.item-list {
 		min-width: 80vw;
 	}
+
+	.icon-container {
+		width: 42px;
+		height: 42px;
+	}
+
+	.menu-toggle {
+		top: 40px;
+	}
+	
 }
