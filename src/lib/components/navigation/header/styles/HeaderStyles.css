@@ -8,14 +8,10 @@
 }
 
 .menu-toggle {
-	position: fixed;
-	top: 60px;
-	right: 6%;
+	position: relative;
 	background: none;
 	border: none;
 	cursor: pointer;
-	transform: translateY(-50%);
-	transition: all 0.3s ease-in-out;
 	z-index: 9999;
 }
 
@@ -42,8 +38,8 @@
 }
 
 .icon-container {
-	width: 62px;
-	height: 62px;
+	width: 50px;
+	height: 50px;
 }
 
 ul {
@@ -115,25 +111,10 @@ ul {
 	font-weight: bolder;
 }
 
-.top-nav img {
-	position: absolute;
-	width: 100%;
-	height: auto;
-	right: -15%;
-	top: 0;
-	z-index: 0;
-}
-
 @media only screen and (max-width: 1536px) {
-	.top-nav img {
-		right: -20%;
-	}
 }
 
 @media only screen and (max-width: 1280px) {
-	.top-nav img {
-		right: -20%;
-	}
 }
 
 @media only screen and (max-width: 1024px) {
@@ -151,6 +132,5 @@ ul {
 	}
 
 	.menu-toggle {
-		top: 40px;
 	}
 }

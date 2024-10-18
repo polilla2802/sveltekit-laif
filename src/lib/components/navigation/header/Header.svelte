@@ -43,11 +43,11 @@
 	<div class="py-16"></div>
 {:else}
 	<section class={$page.url.pathname === '/' ? 'bg-primaryGreen' : 'bg-black'}>
-		<nav class="flex justify-between mx-auto md:container md:px-6 top-nav">
-			<div class="z-10 w-24 logo-container"></div>
-			<div class="z-10 hidden left md:block">
-				<div class="flex flex-col left-container md:flex-row"></div>
+		<nav class="container flex justify-between px-10 mx-auto md:container md:px-6 top-nav">
+			<div class={$page.url.pathname === '/' ? 'hidden' : 'z-10 w-24 logo-container'}>
+				<img src="/logos/laif-logo.png" alt="menu button" />
 			</div>
+			<div class="space-x-24"></div>
 
 			<button class="z-10 text-white menu-toggle" on:click={toggleMenu}>
 				<div class="icon-container">
