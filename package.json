@@ -28,6 +28,7 @@
 		"@tsconfig/svelte": "^5.0.4",
 		"@types/node": "^20.14.12",
 		"autoprefixer": "^10.4.19",
+		"firebase": "^10.12.4",
 		"dotenv-cli": "^7.4.2",
 		"postcss": "^8.4.39",
 		"prettier": "^3.3.3",
