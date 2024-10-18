@@ -64,6 +64,7 @@ ul {
 	scrollbar-width: none; /* Firefox */
 	min-width: 40vw;
 	padding: 40px;
+	padding-bottom: 80px;
 	border-radius: 0px 50px 0px 0px;
 	box-shadow: 2px 0px #888888;
 	background: black;
@@ -123,7 +124,6 @@ ul {
 	z-index: 0;
 }
 
-
 @media only screen and (max-width: 1536px) {
 	.top-nav img {
 		right: -20%;
@@ -142,6 +142,7 @@ ul {
 @media only screen and (max-width: 768px) {
 	.item-list {
 		min-width: 80vw;
+		padding-bottom: 80px;
 	}
 
 	.icon-container {
@@ -152,5 +153,4 @@ ul {
 	.menu-toggle {
 		top: 40px;
 	}
-	
 }
