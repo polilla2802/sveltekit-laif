@@ -64,45 +64,48 @@
 				>
 					<ul class="items-start justify-between">
 						<div class="flex flex-col item-list">
+							<a class:active={$page.url.pathname === '/'} class="smooth-underline" href="/"
+								>Inicio</a
+							>
 							<a
 								class:active={$page.url.pathname === '/explora'}
 								class="smooth-underline"
 								href="/explora">Explora</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('/es/mapas')}
+								class:active={$page.url.pathname.includes('/bienes-raices')}
 								class="smooth-underline"
-								href="/es/mapas">Bienes y Raices</a
+								href="/bienes-raices">Bienes y Raices</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('/es/folletos')}
+								class:active={$page.url.pathname.includes('/estilo-vida')}
 								class="smooth-underline"
-								href="/es/folletos">Estilo de Vida</a
+								href="/estilo-vida">Estilo de Vida</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('/es/videos')}
+								class:active={$page.url.pathname.includes('/historia')}
 								class="smooth-underline"
-								href="/es/videos">Historia</a
+								href="/historia">Historia</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('/es/servicios')}
+								class:active={$page.url.pathname.includes('/industria')}
 								class="smooth-underline"
-								href="/es/servicios">Industria</a
+								href="/industria">Industria</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('/es/servicios')}
+								class:active={$page.url.pathname.includes('/naturaleza')}
 								class="smooth-underline"
-								href="/es/servicios">Naturaleza</a
+								href="/naturaleza">Naturaleza</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('/es/servicios')}
+								class:active={$page.url.pathname.includes('/entretenimiento')}
 								class="smooth-underline"
-								href="/es/servicios">Entretenimiento</a
+								href="/entretenimiento">Entretenimiento</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('/es/servicios')}
+								class:active={$page.url.pathname.includes('/destinos')}
 								class="smooth-underline"
-								href="/es/servicios">Destinos</a
+								href="/destinos">Destinos</a
 							>
 						</div>
 					</ul>
