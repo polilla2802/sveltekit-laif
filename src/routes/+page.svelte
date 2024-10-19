@@ -1,6 +1,9 @@
 <script lang="ts">
+	import VideosContainer from '$lib/components/layouts/videos/VideosContainer.svelte';
 	import { takeMeToVideos } from '$utils/routing';
 	import Icon from '@iconify/svelte';
+
+	let videoOpened = false;
 
 	let touchStartY = 0;
 	let touchEndY = 0;
@@ -16,8 +19,14 @@
 		// Detecting swipe up (start Y > end Y)
 		if (touchStartY - touchEndY > 50) {
 			// Trigger navigation to the /videos page
-			takeMeToVideos();
+			videoOpened = true;
 		}
+	}
+
+	// Function to open VideosContainer
+	function openVideos() {
+		console.log('opened');
+		videoOpened = true;
 	}
 </script>
 
@@ -26,12 +35,37 @@
 	<img class="hidden md:block bg-web" src="/images/bg-web.png" alt="bg-web" />
 	<img class="block bg-mobile md:hidden" src="/images/bg-mobile.png" alt="bg-web" />
 	<img src="/logos/laif-logo.png" alt="laif logo" />
-	<div class="points-container" on:touchstart={handleTouchStart} on:touchend={handleTouchEnd}>
-		<Icon class="grow-shrink" width="32" height="42" icon="material-symbols-light:circle" style="color: white" />
-		<Icon class="grow-shrink" width="22" height="32" icon="stash:circle-dot-duotone" style="color: white" />
-		<Icon class="grow-shrink" width="12" height="22" icon="stash:circle-duotone" style="color: white" />
-	</div>
+	<button
+		class="points-container"
+		on:touchstart={handleTouchStart}
+		on:touchend={handleTouchEnd}
+		on:click={openVideos}
+	>
+		<Icon
+			class="grow-shrink-big"
+			width="32"
+			height="42"
+			icon="material-symbols-light:circle"
+			style="color: white"
+		/>
+		<Icon
+			class="grow-shrink-mid"
+			width="22"
+			height="32"
+			icon="stash:circle-dot-duotone"
+			style="color: white"
+		/>
+		<Icon
+			class="grow-shrink-small"
+			width="12"
+			height="22"
+			icon="stash:circle-duotone"
+			style="color: white"
+		/>
+	</button>
 </section>
+
+<VideosContainer opened={videoOpened} />
 
 <style>
 	@import '$lib/styles/routes/home/HomeStyles.css';
