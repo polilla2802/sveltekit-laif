@@ -27,9 +27,9 @@
 	<img class="block bg-mobile md:hidden" src="/images/bg-mobile.png" alt="bg-web" />
 	<img src="/logos/laif-logo.png" alt="laif logo" />
 	<div class="points-container" on:touchstart={handleTouchStart} on:touchend={handleTouchEnd}>
-		<Icon width="32" height="42" icon="material-symbols-light:circle" style="color: white" />
-		<Icon width="22" height="32" icon="stash:circle-dot-duotone" style="color: white" />
-		<Icon width="12" height="22" icon="stash:circle-duotone" style="color: white" />
+		<Icon class="grow-shrink" width="32" height="42" icon="material-symbols-light:circle" style="color: white" />
+		<Icon class="grow-shrink" width="22" height="32" icon="stash:circle-dot-duotone" style="color: white" />
+		<Icon class="grow-shrink" width="12" height="22" icon="stash:circle-duotone" style="color: white" />
 	</div>
 </section>
 
