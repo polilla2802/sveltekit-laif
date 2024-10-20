@@ -28,8 +28,8 @@
 <Header />
 
 <main class="text-white layout bg-primaryGreen full-height-section">
-	<section class="container flex-1 h-full px-4 mx-auto flex-container">
-		<div class="h-full slot-content">
+	<section class="flex-1 h-full mx-auto flex-container">
+		<div class="h-full">
 			<slot />
 		</div>
 	</section>

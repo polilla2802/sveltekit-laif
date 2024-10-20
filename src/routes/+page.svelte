@@ -1,5 +1,4 @@
 <script lang="ts">
-	import VideosContainer from '$lib/components/layouts/videos/VideosContainer.svelte';
 	import { takeMeToVideos } from '$utils/routing';
 	import Icon from '@iconify/svelte';
 
@@ -19,14 +18,14 @@
 		// Detecting swipe up (start Y > end Y)
 		if (touchStartY - touchEndY > 50) {
 			// Trigger navigation to the /videos page
-			videoOpened = true;
+			takeMeToVideos();
 		}
 	}
 
 	// Function to open VideosContainer
 	function openVideos() {
 		console.log('opened');
-		videoOpened = true;
+		takeMeToVideos();
 	}
 </script>
 
@@ -64,8 +63,6 @@
 		/>
 	</button>
 </section>
-
-<VideosContainer opened={videoOpened} />
 
 <style>
 	@import '$lib/styles/routes/home/HomeStyles.css';

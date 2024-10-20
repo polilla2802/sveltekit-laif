@@ -1,0 +1,64 @@
+.video-container {
+	height: 100%;
+	width: 100%;
+	background: black;
+}
+
+.video-bg {
+	height: 85%;
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+}
+
+.video-title {
+	height: 15%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+h2 {
+	font-weight: bolder;
+}
+
+video {
+	position: absolute;
+	left: 50%;
+	top: 0;
+	width: auto;
+	height: 100%;
+	z-index: 9;
+	max-width: unset;
+	transform: translateX(-50%);
+}
+
+.overlay {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 10;
+	opacity: 0.5;
+}
+
+@media only screen and (max-width: 1024px) {
+	.video-title h2{
+		font-size: 0.8rem;
+	}
+}
+
+@media only screen and (max-width: 768px) {
+	.video-title h2{
+		font-size: 0.7rem;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	.video-title h2{
+		font-size: 0.6rem;
+	}
+}
