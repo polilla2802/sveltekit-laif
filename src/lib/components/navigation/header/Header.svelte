@@ -45,7 +45,9 @@
 	<section class={$page.url.pathname === '/' ? 'bg-primaryGreen' : 'bg-black'}>
 		<nav class="container flex justify-between px-10 mx-auto md:container md:px-6 top-nav">
 			<div class={$page.url.pathname === '/' ? 'hidden' : 'z-10 w-24 logo-container'}>
-				<img src="/logos/laif-logo.png" alt="menu button" />
+				<button on:click={takeMeHome}>
+					<img src="/logos/laif-logo.png" alt="menu button" />
+				</button>
 			</div>
 			<div class="space-x-24"></div>
 
