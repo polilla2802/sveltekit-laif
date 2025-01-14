@@ -50,6 +50,12 @@
 		font-size: 8px;
 		height: 30px;
 	}
+	.top-nav a {
+		border-radius: 10px 10px 0 0;
+	}
+	.bottom-nav a {
+		border-radius: 0 0 10px 10px;
+	}
 }
 
 @media only screen and (max-width: 600px) {

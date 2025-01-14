@@ -12,7 +12,16 @@
 	let historia = false;
 
 	function resetFlags() {
-		laif = bienes = vida = industria = destinos = explora = entretenimiento = naturaleza = historia = false;
+		laif =
+			bienes =
+			vida =
+			industria =
+			destinos =
+			explora =
+			entretenimiento =
+			naturaleza =
+			historia =
+				false;
 	}
 
 	function toogleLaif() {
@@ -64,20 +73,17 @@
 <div class="laif-container">
 	<div class="laif-content">
 		<div class="gap-1 px-3 md:px-12 md:gap-3 top-nav">
-			<button on:click={toogleBienes}>
-				<a class="flex-1" href="#bienes" style="background-color:#E35836">Bienes y Raices</a>
+			<button class="flex-1" on:click={toogleBienes}>
+				<a href="#bienes" style="background-color:#E35836">Bienes y Raices</a>
 			</button>
-			<button on:click={toogleVida}>
-				<a class="flex-1" href="#vida" style="background-color:#9AA9E6">Estilo de Vida</a>
+			<button class="flex-1" on:click={toogleVida}>
+				<a href="#vida" style="background-color:#9AA9E6">Estilo de Vida</a>
 			</button>
-			<button on:click={toogleIndustria}>
-				<a class="flex-1" href="#industia" style="background-color:#F5D579">Industria</a>
+			<button class="flex-1" on:click={toogleIndustria}>
+				<a href="#industia" style="background-color:#F5D579">Industria</a>
 			</button>
-			<button on:click={toogleDestinos}>
-				<a class="flex-1" href="#destinos" style="background-color:#476C87">Destinos</a>
-			</button>
-			<button on:click={toogleExplora}>
-				<a class="flex-1" href="#explora" style="background-color:#B4ACCC">Explora</a>
+			<button class="flex-1" on:click={toogleDestinos}>
+				<a href="#destinos" style="background-color:#476C87">Destinos</a>
 			</button>
 		</div>
 		<div class="laif-stream">
@@ -134,19 +140,18 @@
 			{/if}
 		</div>
 		<div class="gap-1 px-3 md:px-12 md:gap-3 bottom-nav">
-			<button on:click={toogleEntretenimiento}>
-				<a class="flex-1" href="#entretenimiento" style="background-color:#FB9285"
-					>Entretenimiento</a
-				>
+			<button class="flex-1" on:click={toogleExplora}>
+				<a href="#explora" style="background-color:#B4ACCC">Explora</a>
 			</button>
-			<button on:click={toogleNaturaleza}>
-				<a class="flex-1" href="#naturaleza" style="background-color:#5A774F">Naturaleza</a>
+			<button class="flex-1" on:click={toogleEntretenimiento}>
+				<a href="#entretenimiento" style="background-color:#FB9285">Entretenimiento</a>
 			</button>
-			<button on:click={toogleHistoria}>
-				<a class="flex-1" href="#historia" style="background-color:#515A80">Historia</a>
+			<button class="flex-1" on:click={toogleNaturaleza}>
+				<a href="#naturaleza" style="background-color:#5A774F">Naturaleza</a>
 			</button>
-			<div class="flex-1"></div>
-			<div class="flex-1"></div>
+			<button class="flex-1" on:click={toogleHistoria}>
+				<a href="#historia" style="background-color:#515A80">Historia</a>
+			</button>
 		</div>
 	</div>
 </div>
