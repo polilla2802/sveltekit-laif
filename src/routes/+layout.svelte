@@ -27,27 +27,10 @@
 
 <Header />
 
-<main class="text-white layout bg-primaryGreen full-height-section">
+<main class="text-white bg-black layout">
 	<section class="flex-1 h-full mx-auto flex-container">
 		<div class="h-full">
 			<slot />
 		</div>
 	</section>
 </main>
-
-<style>
-	/* Use the custom --vh variable for mobile-specific viewport height */
-	.full-height-section {
-		height: calc(var(--vh, 1vh) * 90); /* 100% of the calculated viewport height */
-	}
-
-	/* Fallback to regular 100vh for non-affected devices */
-	@media (min-width: 1024px) {
-		.full-height-section {
-			height: 90vh;
-		}
-	}
-
-	@media only screen and (max-width: 600px) {
-	}
-</style>

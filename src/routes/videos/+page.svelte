@@ -1,8 +1,8 @@
-<script>
-	import VideoContainer from '$lib/components/layouts/videos/VideoContainer.svelte';
+<script lang="ts">
+	import VideoContainer from '$lib/components/layouts/videos/tile/VideoTile.svelte';
 </script>
 
-<section class="grid h-full grid-cols-4 grid-rows-2">
+<section class="grid h-full grid-cols-4 grid-rows-2 full-height-section">
 	<VideoContainer
 		title={'Explora'}
 		bgColor={'#886bcd'}
@@ -44,3 +44,8 @@
 		videoSrc={'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fnaturaleza.mp4?alt=media&token=36282d62-27fb-4998-94c2-3304524b3422#t=0.1'}
 	/>
 </section>
+
+
+<style>
+	@import '$lib/styles/routes/videos/VideoStyles.css';
+</style>

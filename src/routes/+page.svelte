@@ -2,8 +2,6 @@
 	import { takeMeToVideos } from '$utils/routing';
 	import Icon from '@iconify/svelte';
 
-	let videoOpened = false;
-
 	let touchStartY = 0;
 	let touchEndY = 0;
 
@@ -29,7 +27,9 @@
 	}
 </script>
 
-<section class="flex flex-col items-center justify-between h-full py-10 align-middle">
+<section
+	class="flex flex-col items-center justify-between h-full py-10 align-middle full-height-section"
+>
 	<div class="space-y-24"></div>
 	<img class="hidden md:block bg-web" src="/images/bg-web.png" alt="bg-web" />
 	<img class="block bg-mobile md:hidden" src="/images/bg-mobile.png" alt="bg-web" />
