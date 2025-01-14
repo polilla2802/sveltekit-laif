@@ -36,10 +36,6 @@
 .bottom-nav a {
 	border-radius: 0 0 15px 15px;
 }
-.top-nav a:hover,
-.bottom-nav a:hover {
-	opacity: 0.8;
-}
 
 @media only screen and (max-width: 1024px) {
 }
