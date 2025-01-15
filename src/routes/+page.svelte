@@ -22,7 +22,6 @@
 
 	// Function to open VideosContainer
 	function openVideos() {
-		console.log('opened');
 		takeMeToVideos();
 	}
 </script>

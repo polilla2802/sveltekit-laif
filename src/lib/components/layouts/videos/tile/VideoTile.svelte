@@ -2,17 +2,51 @@
 	export let title: string;
 	export let videoSrc: string;
 	export let bgColor: string;
+
+	let anchor: string;
+
+	switch (title) {
+		case 'Explora':
+			anchor = '#explora';
+			break;
+		case 'Bienes y Raices':
+			anchor = '#bienes';
+			break;
+		case 'Estilo de Vida':
+			anchor = '#vida';
+			break;
+		case 'Industria':
+			anchor = '#industria';
+			break;
+		case 'Destinos':
+			anchor = '#destinos';
+			break;
+		case 'Entretenimiento':
+			anchor = '#entretenimiento';
+			break;
+		case 'Naturaleza':
+			anchor = '#naturaleza';
+			break;
+		case 'Historia':
+			anchor = '#historia';
+			break;
+		default:
+			anchor = '';
+			break;
+	}
+
+	const href = `/stream/${anchor}`;
 </script>
 
 <section class="flex flex-col items-center justify-between h-full align-middle video-container">
-	<a href="/stream">
+	<a href="{href}">
 		<div class="video-bg">
-			<div class="overlay" style="background-color: {bgColor};"></div>
+			<div class="overlay" style="background-color: black"></div>
 			<video src={videoSrc} autoplay loop muted playsinline>
 				<track kind="captions" />
 			</video>
 		</div>
-		<div class="video-title">
+		<div class="video-title" style="background-color: {bgColor};">
 			<h2 class="uppercase">{title}</h2>
 		</div>
 	</a>
