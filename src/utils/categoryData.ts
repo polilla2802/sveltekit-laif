@@ -45,7 +45,7 @@ export const categoryData: Record<
 			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fnaturaleza.mp4?alt=media&token=36282d62-27fb-4998-94c2-3304524b3422#t=0.1',
 		label:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-		icon: '/icons/icon-naturaleza.png'
+		icon: '/icons/icon-destinos.png'
 	},
 	explora: {
 		title: 'Explora',
