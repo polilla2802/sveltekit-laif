@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+	font-family: 'Montserrat-Black';
+	src: url('/fonts/Montserrat/Montserrat.ttf') format('truetype');
+	font-weight: bolder;
+	font-style: normal;
+}
 html {
 	box-sizing: border-box;
 }
@@ -16,7 +22,7 @@ body {
 	margin: 0;
 	padding: 0;
 	font-size: 1rem;
-	font-family: 'Poppins', sans-serif;
+	font-family: 'Montserrat-Black', sans-serif;
 	color: white;
 	letter-spacing: 1.3px;
 }
@@ -35,6 +41,7 @@ textarea {
 }
 
 button {
+	font-family: 'Montserrat-Black', sans-serif;
 	cursor: pointer;
 }
 

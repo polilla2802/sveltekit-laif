@@ -135,7 +135,7 @@
 					on:click={toogleBienes}
 					style="background-color:#E35836"
 				>
-					<a href="#bienes">Bienes y Raices</a>
+					<a href="#bienes" class="small-font">Bienes y Raices</a>
 					<img src="/images/menu.png" alt="menu button" />
 				</button>
 				<button
@@ -143,7 +143,7 @@
 					on:click={toogleVida}
 					style="background-color:#9AA9E6"
 				>
-					<a href="#vida">Estilo de Vida</a>
+					<a href="#vida" class="small-font">Estilo de Vida</a>
 					<img src="/images/menu.png" alt="menu button" />
 				</button>
 				<button
@@ -230,7 +230,7 @@
 					on:click={toogleEntretenimiento}
 					style="background-color:#FB9285"
 				>
-					<a href="#entretenimiento">Entretenimiento</a>
+					<a href="#entretenimiento" class="small-font">Entretenimiento</a>
 					<img src="/images/menu.png" alt="menu button" />
 				</button>
 				<button

@@ -32,32 +32,33 @@
 .bottom-nav a {
 	display: flex;
 	justify-content: center;
+	align-self: center;
 	color: white;
 	font-weight: bolder;
 	text-transform: uppercase;
 	font-size: 14px;
 	text-align: center;
 	text-decoration: none;
+	letter-spacing: 1px;
 }
 .top-nav button,
 .bottom-nav button {
-	height: 40px;
-	transition: all 0.3s;
+	transition: all 1s;
 }
 .top-nav button {
 	display: flex;
 	justify-content: center;
-	padding: 10px;
+	padding: 20px 10px;
 	border-radius: 15px 15px 0 0;
 }
 .bottom-nav button {
 	display: flex;
 	justify-content: center;
-	padding: 10px;
+	padding: 20px 10px;
 	border-radius: 0 0 15px 15px;
 }
 .active {
-	height: 60px !important;
+	padding: 30px 10px;
 }
 .active a {
 	display: none;
@@ -79,25 +80,44 @@
 	object-fit: cover;
 }
 @media only screen and (max-width: 1024px) {
+	.top-nav a,
+	.bottom-nav a {
+		font-size: 10px;
+	}
+	.top-nav button {
+		padding: 15px 10px;
+	}
+	.bottom-nav button {
+		padding: 15px 10px;
+	}
+	.active {
+		padding: 20px 10px;
+	}
 }
 
 @media only screen and (max-width: 768px) {
 	.top-nav a,
 	.bottom-nav a {
-		font-size: 8px;
+		font-size: 6px;
 	}
 	.top-nav button,
 	.bottom-nav button {
-		height: 30px;
+		min-height: 30px;
 	}
 	.top-nav button {
+		padding: 5px 10px;
 		border-radius: 10px 10px 0 0;
 	}
 	.bottom-nav button {
+		padding: 5px 10px;
 		border-radius: 0 0 10px 10px;
 	}
+	.top-nav img,
+	.bottom-nav img {
+		width: 20px;
+	}
 	.active {
-		height: 40px !important;
+		padding: 7px 10px !important;
 	}
 }
 
