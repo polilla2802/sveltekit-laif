@@ -166,7 +166,7 @@
 			<div class="laif-stream">
 				{#if laif}
 					<VideoStream
-						bgColor={'red'}
+						bgColor={'black'}
 						videoSrc={'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fbienesyraices.mp4?alt=media&token=3111b0bc-dbd7-408a-a336-63b7fc700d26#t=0.1'}
 					/>
 				{:else if bienes}
@@ -211,7 +211,7 @@
 					/>
 				{:else}
 					<VideoStream
-						bgColor={'red'}
+						bgColor={'black'}
 						videoSrc={'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fbienesyraices.mp4?alt=media&token=3111b0bc-dbd7-408a-a336-63b7fc700d26#t=0.1'}
 					/>
 				{/if}

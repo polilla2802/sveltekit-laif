@@ -66,50 +66,60 @@
 				>
 					<ul class="items-start justify-between">
 						<div class="flex flex-col item-list">
-							<a class:active={$page.url.pathname === '/'} class="smooth-underline" href="/"
-								>Inicio</a
+							<a
+								class:active={$page.url.pathname === '/'}
+								class="smooth-underline"
+								href="/"
+								on:click={toggleMenu}>Inicio</a
 							>
 							<a
 								class:active={$page.url.pathname.includes('/stream#bienes')}
 								class="smooth-underline"
-								href="/stream#bienes">Bienes y Raices</a
+								href="/stream#bienes"
+								on:click={toggleMenu}>Bienes y Raices</a
 							>
 							<a
 								class:active={$page.url.pathname.includes('/stream#vida')}
 								class="smooth-underline"
-								href="/stream#vida">Estilo de Vida</a
+								href="/stream#vida"
+								on:click={toggleMenu}>Estilo de Vida</a
 							>
 							<a
 								class:active={$page.url.pathname.includes('//stream#industria')}
 								class="smooth-underline"
-								href="/stream#industria">Industria</a
+								href="/stream#industria"
+								on:click={toggleMenu}>Industria</a
 							>
 							<a
 								class:active={$page.url.pathname.includes('/stream#destinos')}
 								class="smooth-underline"
-								href="/stream#destinos">Destinos</a
+								href="/stream#destinos"
+								on:click={toggleMenu}>Destinos</a
 							>
 							<a
 								class:active={$page.url.pathname === '/stream#explora'}
 								class="smooth-underline"
-								href="/stream#explora">Explora</a
+								href="/stream#explora"
+								on:click={toggleMenu}>Explora</a
 							>
-
 
 							<a
 								class:active={$page.url.pathname.includes('/stream#entretenimiento')}
 								class="smooth-underline"
-								href="/stream#entretenimiento">Entretenimiento</a
+								href="/stream#entretenimiento"
+								on:click={toggleMenu}>Entretenimiento</a
 							>
 							<a
 								class:active={$page.url.pathname.includes('/stream#naturaleza')}
 								class="smooth-underline"
-								href="/stream#naturaleza">Naturaleza</a
+								href="/stream#naturaleza"
+								on:click={toggleMenu}>Naturaleza</a
 							>
 							<a
 								class:active={$page.url.pathname.includes('/stream#historia')}
 								class="smooth-underline"
-								href="/stream#historia">Historia</a
+								href="/stream#historia"
+								on:click={toggleMenu}>Historia</a
 							>
 						</div>
 					</ul>
