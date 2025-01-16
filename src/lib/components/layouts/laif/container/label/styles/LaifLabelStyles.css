@@ -1,0 +1,46 @@
+.label-container {
+	padding: 5%;
+	border-radius: 20px;
+}
+.label-content {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	gap: 15px;
+}
+.img-container {
+	border-radius: 15px;
+	padding: 10px;
+}
+p {
+	font-size: 1rem;
+	line-height: 20px;
+	font-weight: bold;
+	text-align: left;
+}
+img {
+	width: 200px;
+	height: 100%;
+}
+@media only screen and (max-width: 1024px) {
+	p {
+		font-size: 0.8rem;
+		line-height: 15px;
+	}
+}
+
+@media only screen and (max-width: 768px) {
+	p {
+		font-size: 0.6rem;
+		line-height: 10px;
+	}
+	.img-container {
+		padding: 10px;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	p {
+		font-size: 0.5rem;
+	}
+}

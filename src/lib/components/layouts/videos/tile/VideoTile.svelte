@@ -2,6 +2,7 @@
 	export let title: string;
 	export let videoSrc: string;
 	export let bgColor: string;
+	export let icon: string;
 
 	let anchor: string;
 
@@ -15,7 +16,7 @@
 		case 'Estilo de Vida':
 			anchor = '#vida';
 			break;
-		case 'Industria':
+		case 'Industria y Naturaleza':
 			anchor = '#industria';
 			break;
 		case 'Destinos':
@@ -39,7 +40,7 @@
 </script>
 
 <section class="flex flex-col items-center justify-between h-full align-middle video-container">
-	<a href="{href}">
+	<a {href}>
 		<div class="video-bg">
 			<div class="overlay" style="background-color: black"></div>
 			<video src={videoSrc} autoplay loop muted playsinline>
@@ -48,6 +49,7 @@
 		</div>
 		<div class="video-title" style="background-color: {bgColor};">
 			<h2 class="uppercase">{title}</h2>
+			<img src={icon} alt="menu button" />
 		</div>
 	</a>
 </section>

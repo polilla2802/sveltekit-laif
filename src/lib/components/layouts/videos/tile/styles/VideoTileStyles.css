@@ -3,33 +3,30 @@
 	width: 100%;
 	background: black;
 }
-
 .video-bg {
-	height: 85%;
+	height: 75%;
 	position: relative;
 	width: 100%;
 	overflow: hidden;
 }
-
 .video-title {
-	height: 15%;
+	height: 25%;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 }
-
 .video-title h2 {
 	font-weight: bolder;
 	text-align: center;
+	font-size: 0.8rem;
+	margin-bottom: 5px;
 }
-
 a {
 	width: 100%;
 	height: 100%;
 }
-
 video {
 	position: absolute;
 	left: 50%;
@@ -40,7 +37,6 @@ video {
 	max-width: unset;
 	transform: translateX(-50%);
 }
-
 .overlay {
 	width: 100%;
 	height: 100%;
@@ -50,16 +46,36 @@ video {
 	z-index: 10;
 	opacity: 0.25;
 }
-
+img {
+	width: 30px;
+}
 @media only screen and (max-width: 1024px) {
+	.video-bg {
+		height: 80%;
+	}
+	.video-title {
+		height: 20%;
+	}
 	.video-title h2 {
-		font-size: 0.8rem;
+		font-size: 0.6rem;
+	}
+	img {
+		width: 20px;
 	}
 }
 
 @media only screen and (max-width: 768px) {
+	.video-bg {
+		height: 82%;
+	}
+	.video-title {
+		height: 18%;
+	}
 	.video-title h2 {
-		font-size: 0.7rem;
+		font-size: 0.5rem;
+	}
+	img {
+		width: 18px;
 	}
 }
 
