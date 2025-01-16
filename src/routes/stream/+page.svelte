@@ -136,7 +136,7 @@
 					style="background-color:#E35836"
 				>
 					<a href="#bienes" class="small-font">Bienes y Raices</a>
-					<img src="/images/menu.png" alt="menu button" />
+					<img src="/icons/icon-bienes.png" alt="menu button" />
 				</button>
 				<button
 					class="flex-1 {vida ? 'active' : ''}"
@@ -144,7 +144,7 @@
 					style="background-color:#9AA9E6"
 				>
 					<a href="#vida" class="small-font">Estilo de Vida</a>
-					<img src="/images/menu.png" alt="menu button" />
+					<img src="/icons/icon-vida.png" alt="menu button" />
 				</button>
 				<button
 					class="flex-1 {industria ? 'active' : ''}"
@@ -152,7 +152,7 @@
 					style="background-color:#F5D579"
 				>
 					<a href="#industria">Industria</a>
-					<img src="/images/menu.png" alt="menu button" />
+					<img src="/icons/icon-industria.png" alt="menu button" />
 				</button>
 				<button
 					class="flex-1 {destinos ? 'active' : ''}"
@@ -160,7 +160,7 @@
 					style="background-color:#476C87"
 				>
 					<a href="#destinos">Destinos</a>
-					<img src="/images/menu.png" alt="menu button" />
+					<img src="/icons/icon-destinos.png" alt="menu button" />
 				</button>
 			</div>
 			<div class="laif-stream">
@@ -223,7 +223,7 @@
 					style="background-color:#B4ACCC"
 				>
 					<a href="#explora">Explora</a>
-					<img src="/images/menu.png" alt="menu button" />
+					<img src="/icons/icon-explora.png" alt="menu button" />
 				</button>
 				<button
 					class="flex-1 {entretenimiento ? 'active' : ''}"
@@ -231,7 +231,7 @@
 					style="background-color:#FB9285"
 				>
 					<a href="#entretenimiento" class="small-font">Entretenimiento</a>
-					<img src="/images/menu.png" alt="menu button" />
+					<img src="/icons/icon-entretenimiento.png" alt="menu button" />
 				</button>
 				<button
 					class="flex-1 {naturaleza ? 'active' : ''}"
@@ -239,7 +239,7 @@
 					style="background-color:#5A774F"
 				>
 					<a href="#naturaleza">Naturaleza</a>
-					<img src="/images/menu.png" alt="menu button" />
+					<img src="/icons/icon-naturaleza.png" alt="menu button" />
 				</button>
 				<button
 					class="flex-1 {historia ? 'active' : ''}"
@@ -247,7 +247,7 @@
 					style="background-color:#515A80"
 				>
 					<a href="#historia">Historia</a>
-					<img src="/images/menu.png" alt="menu button" />
+					<img src="/icons/icon-historia.png" alt="menu button" />
 				</button>
 			</div>
 		</div>
