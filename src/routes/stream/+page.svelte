@@ -30,7 +30,9 @@
 </script>
 
 <section class="flex flex-col justify-between h-full px-5 py-5 bg-primaryGreen full-height-section">
-	<LaifContainer {categoryData} {currentCategory} {setCategory} />
+	<div class="mt-5 md:mt-10">
+		<LaifContainer {categoryData} {currentCategory} {setCategory} />
+	</div>
 	<LaifLabel {categoryData} {currentCategory}></LaifLabel>
 </section>
 

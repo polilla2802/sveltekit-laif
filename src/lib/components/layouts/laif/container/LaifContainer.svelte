@@ -94,7 +94,7 @@
 		</div>
 	</div>
 
-	<div class="px-5 py-5 disc-container">
+	<div class="px-5 py-5 mt-5 disc-container">
 		<a href="#laif" on:click={() => setCategory('laif')}>
 			<img src="/images/vinyl.png" alt="vinyl" />
 		</a>
