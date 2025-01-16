@@ -6,7 +6,10 @@
 
 	let isOpen: boolean = false;
 
+	let hash = '';
+
 	function toggleMenu() {
+		hash = window.location.hash.slice(1); // Remove the '#' prefix
 		isOpen = !isOpen;
 	}
 
@@ -36,6 +39,11 @@
 
 	onMount(() => {
 		loading = false;
+
+		// Client-side code only
+		if (typeof window !== 'undefined') {
+			hash = window.location.hash.slice(1); // Remove the '#' prefix
+		}
 	});
 </script>
 
@@ -73,50 +81,50 @@
 								on:click={toggleMenu}>Inicio</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('/stream#bienes')}
+								class:active={hash == 'bienes'}
 								class="smooth-underline"
 								href="/stream#bienes"
 								on:click={toggleMenu}>Bienes y Raices</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('/stream#vida')}
+								class:active={hash == 'vida'}
 								class="smooth-underline"
 								href="/stream#vida"
 								on:click={toggleMenu}>Estilo de Vida</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('//stream#industria')}
+								class:active={hash == 'industria'}
 								class="smooth-underline"
 								href="/stream#industria"
 								on:click={toggleMenu}>Industria</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('/stream#destinos')}
+								class:active={hash == 'destinos'}
 								class="smooth-underline"
 								href="/stream#destinos"
 								on:click={toggleMenu}>Destinos</a
 							>
 							<a
-								class:active={$page.url.pathname === '/stream#explora'}
+								class:active={hash == 'explora'}
 								class="smooth-underline"
 								href="/stream#explora"
 								on:click={toggleMenu}>Explora</a
 							>
 
 							<a
-								class:active={$page.url.pathname.includes('/stream#entretenimiento')}
+								class:active={hash == 'entretenimiento'}
 								class="smooth-underline"
 								href="/stream#entretenimiento"
 								on:click={toggleMenu}>Entretenimiento</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('/stream#naturaleza')}
+								class:active={hash == 'naturaleza'}
 								class="smooth-underline"
 								href="/stream#naturaleza"
 								on:click={toggleMenu}>Naturaleza</a
 							>
 							<a
-								class:active={$page.url.pathname.includes('/stream#historia')}
+								class:active={hash == 'historia'}
 								class="smooth-underline"
 								href="/stream#historia"
 								on:click={toggleMenu}>Historia</a
