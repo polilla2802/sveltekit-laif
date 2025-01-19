@@ -30,7 +30,7 @@ export const categoryData: Record<
 		icon: '/icons/icon-vida.png'
 	},
 	industria: {
-		title: 'Industria y Naturaleza',
+		title: 'Industria',
 		bgColor: '#F5D579',
 		videoSrc:
 			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Findustria.mp4?alt=media&token=401d2157-cb2b-4ddb-acc5-0f0eb74d5065#t=0.1',

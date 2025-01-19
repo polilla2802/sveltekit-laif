@@ -16,7 +16,7 @@
 		case 'Estilo de Vida':
 			anchor = '#vida';
 			break;
-		case 'Industria y Naturaleza':
+		case 'Industria':
 			anchor = '#industria';
 			break;
 		case 'Destinos':
