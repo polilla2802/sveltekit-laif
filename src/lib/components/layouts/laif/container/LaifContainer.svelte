@@ -1,6 +1,6 @@
 <script lang="ts">
 	import VideoStream from '../../videos/stream/VideoStream.svelte';
-	export let categoryData: Record<string, { bgColor: string; videoSrc: string; icon: string }>;
+	export let categoryData: Record<string, { bgColor: string; mainVideoSrc: string; icon: string }>;
 	export let currentCategory: keyof typeof categoryData;
 	export let setCategory: (category: keyof typeof categoryData) => void;
 </script>
@@ -49,7 +49,7 @@
 			<div class="laif-stream">
 				<VideoStream
 					bgColor={categoryData[currentCategory]?.bgColor || 'black'}
-					videoSrc={categoryData[currentCategory]?.videoSrc ||
+					videoSrc={categoryData[currentCategory]?.mainVideoSrc ||
 						'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fbienesyraices.mp4?alt=media&token=3111b0bc-dbd7-408a-a336-63b7fc700d26#t=0.1'}
 				/>
 			</div>

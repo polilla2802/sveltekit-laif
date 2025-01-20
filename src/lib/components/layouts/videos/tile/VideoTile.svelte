@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let title: string;
-	export let videoSrc: string;
+	export let altVideoSrc: string;
 	export let bgColor: string;
 	export let icon: string;
 
@@ -43,7 +43,7 @@
 	<a {href}>
 		<div class="video-bg">
 			<div class="overlay" style="background-color: black"></div>
-			<video src={videoSrc} autoplay loop muted playsinline>
+			<video src={altVideoSrc} autoplay loop muted playsinline>
 				<track kind="captions" />
 			</video>
 		</div>

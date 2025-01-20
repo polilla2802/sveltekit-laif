@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let categoryData: Record<
 		string,
-		{ title: string; bgColor: string; videoSrc: string; label: string; icon: string }
+		{ title: string; bgColor: string; mainVideoSrc: string; label: string; icon: string }
 	>;
 	export let currentCategory: keyof typeof categoryData;
 </script>

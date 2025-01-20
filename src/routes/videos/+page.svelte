@@ -7,8 +7,8 @@
 </script>
 
 <section class="grid h-full grid-cols-4 grid-rows-2 full-height-section">
-	{#each categoryEntries as [key, { title, bgColor, videoSrc, label, icon }]}
-		<VideoContainer {title} {bgColor} {videoSrc} {icon} />
+	{#each categoryEntries as [key, { title, bgColor, altVideoSrc, icon }]}
+		<VideoContainer {title} {bgColor} {altVideoSrc} {icon} />
 	{/each}
 </section>
 
