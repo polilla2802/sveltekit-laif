@@ -27,7 +27,7 @@
 
 <Header />
 
-<main class="text-white bg-black layout">
+<main class="text-white bg-primaryGreen layout">
 	<section class="flex-1 h-full mx-auto flex-container">
 		<div class="h-full">
 			<slot />

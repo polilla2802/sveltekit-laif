@@ -6,7 +6,7 @@ export const categoryData: Record<
 		title: 'Laif',
 		bgColor: '#323119',
 		videoSrc:
-			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fbienesyraices.mp4?alt=media&token=3111b0bc-dbd7-408a-a336-63b7fc700d26#t=0.1',
+			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Flaif.mp4?alt=media&token=c160ce37-df46-4418-8c86-a8ead80b50ff',
 		label:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
 		icon: '/logos/laif-logo.png'
@@ -42,7 +42,7 @@ export const categoryData: Record<
 		title: 'Destinos',
 		bgColor: '#476C87',
 		videoSrc:
-			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fnaturaleza.mp4?alt=media&token=36282d62-27fb-4998-94c2-3304524b3422#t=0.1',
+			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fdestinos.mp4?alt=media&token=4dcf6f0d-eb6d-46e3-b715-976968a5a387',
 		label:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
 		icon: '/icons/icon-destinos.png'
