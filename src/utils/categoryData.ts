@@ -43,7 +43,7 @@ export const categoryData: Record<
 		altVideoSrc:
 			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Findustria.mp4?alt=media&token=401d2157-cb2b-4ddb-acc5-0f0eb74d5065#t=0.1',
 		label:
-			'La sección de "Industria y Naturaleza" de nuestro canal turístico explora la fascinante intersección entre el desarrollo humano y el entorno natural. A través de reportajes sobre proyectos sostenibles, ecoturismo y la innovación en la industria verde, mostramos cómo las actividades humanas pueden coexistir en armonía con la naturaleza, destacando destinos que promueven un turismo responsable y respetuoso con el medio ambiente.',
+			'La sección de "Industria" de nuestro canal turístico explora la fascinante intersección entre el desarrollo humano y el entorno natural. A través de reportajes sobre proyectos sostenibles, ecoturismo y la innovación en la industria verde, mostramos cómo las actividades humanas pueden coexistir en armonía con la naturaleza, destacando destinos que promueven un turismo responsable y respetuoso con el medio ambiente.',
 		icon: '/icons/icon-industria.png'
 	},
 	destinos: {
@@ -52,7 +52,7 @@ export const categoryData: Record<
 		mainVideoSrc:
 			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fdestinos.mp4?alt=media&token=4dcf6f0d-eb6d-46e3-b715-976968a5a387',
 		altVideoSrc:
-			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fdestinos.mp4?alt=media&token=4dcf6f0d-eb6d-46e3-b715-976968a5a387',
+			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fdestinos-portada.mp4?alt=media&token=7e85b8fb-b13c-44e7-a371-e205829795b3',
 		label:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
 		icon: '/icons/icon-destinos.png'
