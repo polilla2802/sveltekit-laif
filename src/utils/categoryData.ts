@@ -54,7 +54,7 @@ export const categoryData: Record<
 		altVideoSrc:
 			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fdestinos-portada.mp4?alt=media&token=7e85b8fb-b13c-44e7-a371-e205829795b3',
 		label:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+			'Descubre los destinos más fascinantes del mundo. En esta sección, te llevamos a explorar los rincones más hermosos y exóticos, con recomendaciones de lugares imperdibles, actividades únicas y cultura local',
 		icon: '/icons/icon-destinos.png'
 	},
 	explora: {
