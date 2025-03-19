@@ -112,10 +112,10 @@
 							>
 
 							<a
-								class:active={hash == 'entretenimiento'}
+								class:active={hash == 'cultura'}
 								class="smooth-underline"
-								href="/stream#entretenimiento"
-								on:click={toggleMenu}>Entretenimiento</a
+								href="/stream#cultura"
+								on:click={toggleMenu}>Cultura y Arte</a
 							>
 							<a
 								class:active={hash == 'naturaleza'}

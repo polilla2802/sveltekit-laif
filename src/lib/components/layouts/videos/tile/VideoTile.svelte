@@ -22,8 +22,8 @@
 		case 'Destinos':
 			anchor = '#destinos';
 			break;
-		case 'Entretenimiento':
-			anchor = '#entretenimiento';
+		case 'Cultura y Arte':
+			anchor = '#cultura';
 			break;
 		case 'Naturaleza':
 			anchor = '#naturaleza';

@@ -64,13 +64,13 @@
 					<p>Explora</p>
 				</a>
 				<a
-					href="#entretenimiento"
-					class="flex-1 {currentCategory === 'entretenimiento' ? 'active' : ''}"
-					on:click={() => setCategory('entretenimiento')}
+					href="#cultura"
+					class="flex-1 {currentCategory === 'cultura' ? 'active' : ''}"
+					on:click={() => setCategory('cultura')}
 					style="background-color:#FB9285"
 				>
 					<img src={categoryData[currentCategory]?.icon || ''} alt="menu button" />
-					<p class="small-font">Entretenimiento</p>
+					<p class="small-font">Cultura y Arte</p>
 				</a>
 				<a
 					href="#naturaleza"

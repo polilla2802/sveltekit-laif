@@ -68,15 +68,15 @@ export const categoryData: Record<
 			'La sección "Explora" de nuestro canal ofrece un vistazo fascinante a destinos desconocidos, culturas diversas y fenómenos naturales impresionantes. A través de documentales vibrantes y reportajes llenos de aventura, invitamos a los espectadores a descubrir lo extraordinario que se esconde en nuestro mundo, todo desde la comodidad de su hogar.',
 		icon: '/icons/icon-explora.png'
 	},
-	entretenimiento: {
-		title: 'Entretenimiento',
+	cultura: {
+		title: 'Cultura y Arte',
 		bgColor: '#FB9285',
 		mainVideoSrc:
 			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fentretenimiento.mp4?alt=media&token=65181897-0b36-41af-8ddb-14d203982513#t=0.1',
 		altVideoSrc:
 			'https://firebasestorage.googleapis.com/v0/b/laif-dev-4dd99.appspot.com/o/videos%2Fentretenimiento.mp4?alt=media&token=65181897-0b36-41af-8ddb-14d203982513#t=0.1',
 		label:
-			'La sección de "Entretenimiento" de nuestro canal trae lo mejor de la música, cine, series y celebridades. Con entrevistas exclusivas, reseñas de los estrenos más esperados y lo más destacado de la cultura pop, mantenemos a los espectadores al tanto de lo más divertido y emocionante del mundo del entretenimiento.',
+			'La sección de "Cultura y Arte" de nuestro canal trae lo mejor de la música, cine, series y celebridades. Con entrevistas exclusivas, reseñas de los estrenos más esperados y lo más destacado de la cultura pop, mantenemos a los espectadores al tanto de lo más divertido y emocionante del mundo del entretenimiento.',
 		icon: '/icons/icon-entretenimiento.png'
 	},
 	naturaleza: {
