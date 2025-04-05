@@ -57,7 +57,9 @@
 					<img src="/logos/laif-logo.png" alt="menu button" />
 				</button>
 			</div>
-			<div class="space-x-24"></div>
+			<a href="https://www.mycancuntours.com/affiliates/index.php?affid=23303" class="z-10 text-white menu-toggle" >
+				Experiencias
+			</a>
 
 			<button class="z-10 text-white menu-toggle" on:click={toggleMenu}>
 				<div class="icon-container">
