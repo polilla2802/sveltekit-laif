@@ -60,7 +60,7 @@
 
 			<div class={$page.url.pathname != '/' ? 'hidden' : 'space-x-24"'}></div>
 			
-			<a class={$page.url.pathname === '/' ? 'hidden' : 'z-10 text-white menu-toggle'}
+			<a style="background-color: #FCF4DA;" class={$page.url.pathname === '/' ? 'hidden' : 'z-10 text-black rounded-full p-2 font-bold'}
 				href="https://www.mycancuntours.com/affiliates/index.php?affid=23303"> Experiencias
 			</a>
 
