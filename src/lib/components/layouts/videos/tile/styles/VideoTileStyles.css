@@ -37,6 +37,17 @@ video {
 	max-width: unset;
 	transform: translateX(-50%);
 }
+iframe {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 177.78%;
+	height: 100%;
+	z-index: 9;
+	border: 0;
+	pointer-events: none;
+	transform: translate(-50%, -50%);
+}
 .overlay {
 	width: 100%;
 	height: 100%;

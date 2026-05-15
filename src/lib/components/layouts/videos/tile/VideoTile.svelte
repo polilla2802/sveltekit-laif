@@ -1,8 +1,14 @@
 <script lang="ts">
+	import { isYouTubeUrl, toYouTubeEmbedUrl } from '$utils/videoSource';
+
 	export let title: string;
 	export let altVideoSrc: string;
 	export let bgColor: string;
 	export let icon: string;
+
+	$: youtubeEmbed = isYouTubeUrl(altVideoSrc)
+		? toYouTubeEmbedUrl(altVideoSrc, { controls: false })
+		: null;
 
 	let anchor: string;
 
@@ -43,9 +49,20 @@
 	<a {href}>
 		<div class="video-bg">
 			<div class="overlay" style="background-color: black"></div>
-			<video src={altVideoSrc} autoplay loop muted playsinline>
-				<track kind="captions" />
-			</video>
+			{#if youtubeEmbed}
+				<iframe
+					src={youtubeEmbed}
+					title={title}
+					frameborder="0"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+					referrerpolicy="strict-origin-when-cross-origin"
+					tabindex="-1"
+				></iframe>
+			{:else}
+				<video src={altVideoSrc} autoplay loop muted playsinline>
+					<track kind="captions" />
+				</video>
+			{/if}
 		</div>
 		<div class="video-title" style="background-color: {bgColor};">
 			<h2 class="uppercase">{title}</h2>
