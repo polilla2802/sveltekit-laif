@@ -6,9 +6,9 @@ export const categoryData: Record<
 		title: 'Laif',
 		bgColor: '#323119',
 		mainVideoSrc:
-			'https://m.twitch.tv/lowstud1o',
+			'https://www.twitch.tv/hecho_por_hugo',
 		altVideoSrc:
-			'https://m.twitch.tv/lowstud1o',
+			'https://www.twitch.tv/hecho_por_hugo',
 		label:
 			'Transmisión en vivo',
 		icon: '/logos/laif-logo.png'
