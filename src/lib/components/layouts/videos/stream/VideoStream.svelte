@@ -6,7 +6,8 @@
 	export let bgColor: string;
 
 	$: youtubeEmbed = isYouTubeUrl(videoSrc) ? toYouTubeEmbedUrl(videoSrc) : null;
-	$: twitchEmbed = browser && isTwitchUrl(videoSrc)
+	$: istwitch = isTwitchUrl(videoSrc);
+	$: twitchEmbed = browser && istwitch
 		? toTwitchEmbedUrl(videoSrc, window.location.hostname)
 		: null;
 </script>
@@ -22,14 +23,16 @@
 				referrerpolicy="strict-origin-when-cross-origin"
 				allowfullscreen
 			></iframe>
-		{:else if twitchEmbed}
-			<iframe
-				src={twitchEmbed}
-				title="Twitch live stream"
-				frameborder="0"
-				allow="autoplay"
-				allowfullscreen
-			></iframe>
+		{:else if istwitch}
+			{#if twitchEmbed}
+				<iframe
+					src={twitchEmbed}
+					title="Twitch live stream"
+					frameborder="0"
+					allow="autoplay"
+					allowfullscreen
+				></iframe>
+			{/if}
 		{:else}
 			<video src={videoSrc} autoplay loop muted playsinline controls>
 				<track kind="captions" />
