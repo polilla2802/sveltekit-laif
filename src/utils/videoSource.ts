@@ -1,4 +1,27 @@
 const YT_HOSTS = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'youtu.be'];
+const TWITCH_HOSTS = ['twitch.tv', 'www.twitch.tv', 'm.twitch.tv'];
+
+export function isTwitchUrl(src: string): boolean {
+	if (!src) return false;
+	try {
+		const url = new URL(src);
+		return TWITCH_HOSTS.includes(url.hostname);
+	} catch {
+		return false;
+	}
+}
+
+export function toTwitchEmbedUrl(src: string, parent: string): string | null {
+	try {
+		const url = new URL(src);
+		const channel = url.pathname.split('/').filter(Boolean)[0];
+		if (!channel) return null;
+		const params = new URLSearchParams({ channel, parent, autoplay: 'true', muted: 'false' });
+		return `https://player.twitch.tv/?${params.toString()}`;
+	} catch {
+		return null;
+	}
+}
 
 export function isYouTubeUrl(src: string): boolean {
 	if (!src) return false;

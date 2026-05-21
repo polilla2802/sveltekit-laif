@@ -6,11 +6,11 @@ export const categoryData: Record<
 		title: 'Laif',
 		bgColor: '#323119',
 		mainVideoSrc:
-			'https://firebasestorage.googleapis.com/v0/b/laif-dc6f1.appspot.com/o/videos%2Flaif.mp4?alt=media&token=1e8e033d-65cc-4674-b82f-80c6cac9861f',
+			'https://m.twitch.tv/lowstud1o',
 		altVideoSrc:
-			'https://firebasestorage.googleapis.com/v0/b/laif-dc6f1.appspot.com/o/videos%2Flaif.mp4?alt=media&token=1e8e033d-65cc-4674-b82f-80c6cac9861f',
+			'https://m.twitch.tv/lowstud1o',
 		label:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+			'Transmisión en vivo',
 		icon: '/logos/laif-logo.png'
 	},
 	bienes: {
