@@ -4,7 +4,7 @@ Mobile-first content platform I built for a client. It works as a curated video 
 
 **Live site:** [laif.network](https://laif.network)
 
-![LAIF home](./docs/screenshot-home.png)
+![LAIF home](./docs/screenshot-home.jpg)
 
 ---
 
