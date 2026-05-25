@@ -1,28 +1,48 @@
 <script lang="ts">
 	import LaifLabel from '$lib/components/layouts/laif/container/label/LaifLabel.svelte';
 	import LaifContainer from '$lib/components/layouts/laif/container/LaifContainer.svelte';
-	import { categoryData } from '$utils/categoryData';
+	import { categoryData as staticData } from '$utils/categoryData';
 	import { onMount } from 'svelte';
 
-	export let currentCategory: keyof typeof categoryData = 'laif';
+	type CategoryData = typeof staticData;
 
-	function setCategory(category: keyof typeof categoryData) {
+	let categoryData: CategoryData = { ...staticData };
+	export let currentCategory: keyof CategoryData = 'laif';
+
+	function setCategory(category: keyof CategoryData) {
 		currentCategory = category;
 	}
 
-	// Update anchorValue from the URL hash
 	function updateAnchor() {
-		const hash = window.location.hash.slice(1); // Remove the '#' prefix
-		currentCategory = hash || 'laif'; // Default to 'laif' if no hash
+		const hash = window.location.hash.slice(1);
+		currentCategory = ((hash as keyof CategoryData) || 'laif') as keyof CategoryData;
 	}
-	// Initialize and track hash changes
+
+	async function loadVideoUrls() {
+		try {
+			const { db } = await import('$lib/firebase/firebase.client');
+			const { getDocs, collection } = await import('firebase/firestore');
+			const snapshot = await getDocs(collection(db, 'videoUrls'));
+			const overrides: Record<string, { mainVideoSrc: string; altVideoSrc: string }> = {};
+			snapshot.forEach((docSnap) => {
+				overrides[docSnap.id] = docSnap.data() as { mainVideoSrc: string; altVideoSrc: string };
+			});
+			categoryData = Object.fromEntries(
+				Object.entries(staticData).map(([key, value]) => [
+					key,
+					overrides[key] ? { ...value, ...overrides[key] } : value
+				])
+			) as CategoryData;
+		} catch {
+			// Firestore no disponible, se usan valores por defecto
+		}
+	}
+
 	onMount(() => {
-		updateAnchor(); // Check the initial hash
-
-		// Listen for hash changes
+		updateAnchor();
 		window.addEventListener('hashchange', updateAnchor);
+		loadVideoUrls();
 
-		// Cleanup event listener on destroy
 		return () => {
 			window.removeEventListener('hashchange', updateAnchor);
 		};

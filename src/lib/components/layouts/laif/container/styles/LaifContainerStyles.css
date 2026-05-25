@@ -1,16 +1,19 @@
 .laif-container {
 	display: flex;
 	justify-content: center;
-	align-items: center;
+	align-items: flex-start;
 	width: 100%;
 }
 .laif-content {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
 }
 .laif-stream {
 	z-index: 9999;
+	width: 100%;
 }
 .disc-container {
 	width: 100%;
