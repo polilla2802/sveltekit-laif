@@ -20,13 +20,10 @@
 
 	async function loadVideoUrls() {
 		try {
-			const { db } = await import('$lib/firebase/firebase.client');
-			const { getDocs, collection } = await import('firebase/firestore');
-			const snapshot = await getDocs(collection(db, 'videoUrls'));
-			const overrides: Record<string, { mainVideoSrc: string; altVideoSrc: string }> = {};
-			snapshot.forEach((docSnap) => {
-				overrides[docSnap.id] = docSnap.data() as { mainVideoSrc: string; altVideoSrc: string };
-			});
+			const res = await fetch('/api/video-urls');
+			if (!res.ok) return;
+			const overrides: Record<string, { mainVideoSrc: string; altVideoSrc: string }> =
+				await res.json();
 			categoryData = Object.fromEntries(
 				Object.entries(staticData).map(([key, value]) => [
 					key,
@@ -34,7 +31,7 @@
 				])
 			) as CategoryData;
 		} catch {
-			// Firestore no disponible, se usan valores por defecto
+			// Red no disponible — se usan los valores por defecto
 		}
 	}
 

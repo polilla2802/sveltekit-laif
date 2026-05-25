@@ -12,52 +12,35 @@
 		setViewportHeight();
 		window.addEventListener('resize', setViewportHeight);
 
-		// Visitor presence tracking for live stats
-		let presenceId: string | null = null;
-		let heartbeatInterval: ReturnType<typeof setInterval>;
+		// Visitor presence tracking
+		const sessionId = Math.random().toString(36).slice(2);
+		let heartbeat: ReturnType<typeof setInterval>;
 
-		async function registerPresence() {
-			try {
-				const { db } = await import('$lib/firebase/firebase.client');
-				const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
-				presenceId = Math.random().toString(36).slice(2);
-				const presenceRef = doc(db, 'presence', presenceId);
-				await setDoc(presenceRef, {
-					timestamp: serverTimestamp(),
-					path: window.location.pathname
-				});
-				heartbeatInterval = setInterval(async () => {
-					if (presenceId) {
-						await setDoc(presenceRef, {
-							timestamp: serverTimestamp(),
-							path: window.location.pathname
-						});
-					}
-				}, 30000);
-			} catch {
-				// Firestore no disponible
-			}
+		function ping() {
+			fetch('/api/presence', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ sessionId, path: window.location.pathname })
+			}).catch(() => {});
 		}
 
-		async function removePresence() {
-			if (!presenceId) return;
-			try {
-				const { db } = await import('$lib/firebase/firebase.client');
-				const { doc, deleteDoc } = await import('firebase/firestore');
-				await deleteDoc(doc(db, 'presence', presenceId));
-			} catch {
-				// ignore
-			}
+		function leave() {
+			fetch('/api/presence', {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ sessionId }),
+				keepalive: true
+			}).catch(() => {});
 		}
 
-		registerPresence();
-		window.addEventListener('beforeunload', removePresence);
+		ping();
+		heartbeat = setInterval(ping, 30000);
+		window.addEventListener('beforeunload', leave);
 
 		return () => {
 			window.removeEventListener('resize', setViewportHeight);
-			window.removeEventListener('beforeunload', removePresence);
-			clearInterval(heartbeatInterval);
-			removePresence();
+			window.removeEventListener('beforeunload', leave);
+			clearInterval(heartbeat);
 		};
 	});
 </script>

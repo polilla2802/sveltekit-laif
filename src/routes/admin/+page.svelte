@@ -1,19 +1,27 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { categoryData as staticData } from '$utils/categoryData';
+	import type { FirebaseStorage } from 'firebase/storage';
 
-	const ADMIN_PASSWORD = 'laif2024';
+	const ADMIN_PASSWORD = 'laif2026';
 
-	// Auth state
+	// Auth
 	let authenticated = false;
 	let passwordInput = '';
 	let authError = '';
+	let showPassword = false;
 
-	// Dashboard state
+	// Firebase Storage (solo para subir archivos)
+	let storage: FirebaseStorage | null = null;
+
+	// Stats
 	let activeVisitors = 0;
-	let unsubscribePresence: (() => void) | null = null;
+	let visitorPollInterval: ReturnType<typeof setInterval>;
 
-	// Video URL management
+	// Estado de la conexión con la DB
+	let dbReady = false;
+	let dbError = '';
+
 	type VideoEntry = {
 		key: string;
 		title: string;
@@ -21,27 +29,52 @@
 		bgColor: string;
 		mainVideoSrc: string;
 		altVideoSrc: string;
+		savedMain: string;
+		savedAlt: string;
 		uploading: boolean;
+		uploadProgress: number;
 		saving: boolean;
 		saved: boolean;
-		uploadProgress: number;
+		error: string;
 	};
 
-	let videoEntries: VideoEntry[] = Object.entries(staticData).map(([key, val]) => ({
+	let entries: VideoEntry[] = Object.entries(staticData).map(([key, val]) => ({
 		key,
 		title: val.title,
 		icon: val.icon,
 		bgColor: val.bgColor,
 		mainVideoSrc: val.mainVideoSrc,
 		altVideoSrc: val.altVideoSrc,
+		savedMain: val.mainVideoSrc,
+		savedAlt: val.altVideoSrc,
 		uploading: false,
+		uploadProgress: 0,
 		saving: false,
 		saved: false,
-		uploadProgress: 0
+		error: ''
 	}));
+
+	// ─── Auth ───────────────────────────────────────────
+	const SESSION_KEY = 'laif-admin-session';
+	const SESSION_TTL = 24 * 60 * 60 * 1000;
+
+	function saveSession() {
+		localStorage.setItem(SESSION_KEY, String(Date.now()));
+	}
+
+	function clearSession() {
+		localStorage.removeItem(SESSION_KEY);
+	}
+
+	function checkSession(): boolean {
+		const ts = localStorage.getItem(SESSION_KEY);
+		if (!ts) return false;
+		return Date.now() - Number(ts) < SESSION_TTL;
+	}
 
 	function login() {
 		if (passwordInput === ADMIN_PASSWORD) {
+			saveSession();
 			authenticated = true;
 			authError = '';
 			initDashboard();
@@ -50,454 +83,686 @@
 		}
 	}
 
-	function handleKeydown(e: KeyboardEvent) {
+	function logout() {
+		clearSession();
+		clearInterval(visitorPollInterval);
+		authenticated = false;
+		storage = null;
+	}
+
+	function onPasswordKeydown(e: KeyboardEvent) {
 		if (e.key === 'Enter') login();
 	}
 
+	onMount(() => {
+		if (checkSession()) {
+			authenticated = true;
+			initDashboard();
+		}
+	});
+
+	// ─── Dashboard init ──────────────────────────────────
 	async function initDashboard() {
 		try {
-			const { db } = await import('$lib/firebase/firebase.client');
-			const { collection, onSnapshot, getDocs, Timestamp } = await import('firebase/firestore');
+			// Cargar URLs desde CockroachDB via API
+			const res = await fetch('/api/video-urls');
+			if (!res.ok) throw new Error(`HTTP ${res.status}`);
+			const saved: Record<string, { mainVideoSrc: string; altVideoSrc: string }> = await res.json();
 
-			// Load current video URLs from Firestore
-			const snap = await getDocs(collection(db, 'videoUrls'));
-			snap.forEach((docSnap) => {
-				const data = docSnap.data() as { mainVideoSrc: string; altVideoSrc: string };
-				videoEntries = videoEntries.map((e) =>
-					e.key === docSnap.id
-						? { ...e, mainVideoSrc: data.mainVideoSrc || e.mainVideoSrc, altVideoSrc: data.altVideoSrc || e.altVideoSrc }
-						: e
-				);
-			});
+			entries = entries.map((e) =>
+				saved[e.key]
+					? {
+							...e,
+							mainVideoSrc: saved[e.key].mainVideoSrc,
+							altVideoSrc: saved[e.key].altVideoSrc,
+							savedMain: saved[e.key].mainVideoSrc,
+							savedAlt: saved[e.key].altVideoSrc
+						}
+					: e
+			);
 
-			// Subscribe to live visitor count
-			unsubscribePresence = onSnapshot(collection(db, 'presence'), (snapshot) => {
-				const twoMinutesAgo = Date.now() - 2 * 60 * 1000;
-				activeVisitors = snapshot.docs.filter((d) => {
-					const ts = d.data().timestamp as ReturnType<typeof Timestamp.now> | null;
-					return ts && ts.toMillis() > twoMinutesAgo;
-				}).length;
-			});
+			dbReady = true;
+			dbError = '';
+
+			// Inicializar Firebase Storage para subidas
+			const firebase = await import('$lib/firebase/firebase.client');
+			storage = firebase.storage;
+
+			// Polling de visitantes activos cada 10 s
+			await pollVisitors();
+			visitorPollInterval = setInterval(pollVisitors, 10000);
 		} catch (err) {
-			console.error('Error conectando a Firestore:', err);
+			dbReady = false;
+			dbError = err instanceof Error ? err.message : 'No se pudo conectar con la base de datos.';
 		}
 	}
 
-	async function saveVideoUrl(entry: VideoEntry) {
-		const idx = videoEntries.findIndex((e) => e.key === entry.key);
-		videoEntries[idx] = { ...videoEntries[idx], saving: true, saved: false };
+	async function pollVisitors() {
+		try {
+			const res = await fetch('/api/presence');
+			if (res.ok) {
+				const data = await res.json();
+				activeVisitors = data.count ?? 0;
+			}
+		} catch {
+			// ignorar errores de red en el poll
+		}
+	}
+
+	// ─── Guardar URL manualmente ─────────────────────────
+	async function saveEntry(i: number) {
+		const key = entries[i].key;
+		const mainVideoSrc = entries[i].mainVideoSrc.trim();
+		const altVideoSrc = entries[i].altVideoSrc.trim();
+
+		entries[i] = { ...entries[i], saving: true, saved: false, error: '' };
 
 		try {
-			const { db } = await import('$lib/firebase/firebase.client');
-			const { doc, setDoc } = await import('firebase/firestore');
-			await setDoc(doc(db, 'videoUrls', entry.key), {
-				mainVideoSrc: entry.mainVideoSrc,
-				altVideoSrc: entry.altVideoSrc
+			const res = await fetch('/api/video-urls', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ key, mainVideoSrc, altVideoSrc })
 			});
-			videoEntries[idx] = { ...videoEntries[idx], saving: false, saved: true };
+			if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+			entries[i] = {
+				...entries[i],
+				saving: false,
+				saved: true,
+				savedMain: mainVideoSrc,
+				savedAlt: altVideoSrc,
+				error: ''
+			};
 			setTimeout(() => {
-				videoEntries[idx] = { ...videoEntries[idx], saved: false };
-			}, 2000);
+				entries[i] = { ...entries[i], saved: false };
+			}, 2500);
 		} catch (err) {
-			console.error('Error guardando URL:', err);
-			videoEntries[idx] = { ...videoEntries[idx], saving: false };
+			entries[i] = {
+				...entries[i],
+				saving: false,
+				error: err instanceof Error ? err.message : 'Error al guardar'
+			};
 		}
 	}
 
-	async function handleFileUpload(entry: VideoEntry, event: Event) {
+	// ─── Subida de archivo a Firebase Storage ────────────
+	async function handleUpload(i: number, event: Event) {
+		if (!storage) return;
+
 		const input = event.target as HTMLInputElement;
 		const file = input.files?.[0];
 		if (!file) return;
+		input.value = '';
 
-		const idx = videoEntries.findIndex((e) => e.key === entry.key);
-		videoEntries[idx] = { ...videoEntries[idx], uploading: true, uploadProgress: 0 };
+		const ext = file.name.substring(file.name.lastIndexOf('.'));
+		const path = `videos/${entries[i].key}${ext}`;
+
+		entries[i] = { ...entries[i], uploading: true, uploadProgress: 0, error: '' };
 
 		try {
-			const { storage } = await import('$lib/firebase/firebase.client');
 			const { ref, uploadBytesResumable, getDownloadURL } = await import('firebase/storage');
+			const storageRef = ref(storage, path);
+			const task = uploadBytesResumable(storageRef, file);
 
-			const storagePath = `videos/${entry.key}${file.name.substring(file.name.lastIndexOf('.'))}`;
-			const storageRef = ref(storage, storagePath);
-			const uploadTask = uploadBytesResumable(storageRef, file);
-
-			uploadTask.on(
+			task.on(
 				'state_changed',
-				(snapshot) => {
-					const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-					videoEntries[idx] = { ...videoEntries[idx], uploadProgress: Math.round(progress) };
+				(snap) => {
+					const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+					entries[i] = { ...entries[i], uploadProgress: pct };
 				},
-				(error) => {
-					console.error('Error subiendo archivo:', error);
-					videoEntries[idx] = { ...videoEntries[idx], uploading: false };
+				(err) => {
+					entries[i] = { ...entries[i], uploading: false, error: err.message };
 				},
 				async () => {
-					const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
-					videoEntries[idx] = {
-						...videoEntries[idx],
-						mainVideoSrc: downloadUrl,
-						altVideoSrc: downloadUrl,
+					const url = await getDownloadURL(task.snapshot.ref);
+					entries[i] = {
+						...entries[i],
+						mainVideoSrc: url,
+						altVideoSrc: url,
 						uploading: false,
 						uploadProgress: 0
 					};
-					// Auto-save after upload
-					await saveVideoUrl(videoEntries[idx]);
+					// Auto-guardar la nueva URL en CockroachDB
+					await saveEntry(i);
 				}
 			);
 		} catch (err) {
-			console.error('Error iniciando upload:', err);
-			videoEntries[idx] = { ...videoEntries[idx], uploading: false };
+			entries[i] = {
+				...entries[i],
+				uploading: false,
+				error: err instanceof Error ? err.message : 'Error al iniciar la subida'
+			};
 		}
 	}
 
-	onDestroy(() => {
-		unsubscribePresence?.();
-	});
+	// ─── Restaurar valor por defecto ─────────────────────
+	function resetEntry(i: number) {
+		const original = Object.entries(staticData)[i];
+		if (!original) return;
+		const [, val] = original;
+		entries[i] = {
+			...entries[i],
+			mainVideoSrc: val.mainVideoSrc,
+			altVideoSrc: val.altVideoSrc,
+			error: ''
+		};
+	}
+
+	function isDirty(i: number) {
+		return (
+			entries[i].mainVideoSrc !== entries[i].savedMain ||
+			entries[i].altVideoSrc !== entries[i].savedAlt
+		);
+	}
+
+	onDestroy(() => clearInterval(visitorPollInterval));
 </script>
 
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  LOGIN                                                  -->
+<!-- ═══════════════════════════════════════════════════════ -->
 {#if !authenticated}
 	<div class="login-screen">
 		<div class="login-card">
 			<img src="/logos/laif-logo.png" alt="Laif" class="login-logo" />
 			<h1>Panel de Administración</h1>
-			<div class="input-group">
-				<input
-					type="password"
-					placeholder="Contraseña"
-					bind:value={passwordInput}
-					on:keydown={handleKeydown}
-					autocomplete="current-password"
-				/>
-				{#if authError}
-					<p class="error">{authError}</p>
-				{/if}
+			<div class="field">
+				<div class="password-wrap">
+					{#if showPassword}
+						<input
+							type="text"
+							placeholder="Contraseña"
+							bind:value={passwordInput}
+							on:keydown={onPasswordKeydown}
+							autocomplete="current-password"
+						/>
+					{:else}
+						<input
+							type="password"
+							placeholder="Contraseña"
+							bind:value={passwordInput}
+							on:keydown={onPasswordKeydown}
+							autocomplete="current-password"
+						/>
+					{/if}
+					<button
+						type="button"
+						class="eye-btn"
+						on:click={() => (showPassword = !showPassword)}
+						aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+					>
+						{#if showPassword}
+							<!-- ojo abierto -->
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+								<circle cx="12" cy="12" r="3"/>
+							</svg>
+						{:else}
+							<!-- ojo tachado -->
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+								<path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+								<line x1="1" y1="1" x2="23" y2="23"/>
+							</svg>
+						{/if}
+					</button>
+				</div>
+				{#if authError}<p class="field-error">{authError}</p>{/if}
 			</div>
-			<button class="btn-login" on:click={login}>Entrar</button>
+			<button class="btn-primary" on:click={login}>Entrar</button>
 		</div>
 	</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  DASHBOARD                                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
 {:else}
-	<div class="admin-shell">
-		<header class="admin-header">
-			<img src="/logos/laif-logo.png" alt="Laif" class="header-logo" />
-			<h1>Panel de Administración</h1>
-			<div class="visitors-badge">
-				<span class="dot"></span>
-				<span class="visitors-count">{activeVisitors}</span>
-				<span class="visitors-label">visitantes activos</span>
-			</div>
+	<div class="shell">
+		<!-- Header -->
+		<header class="top-bar">
+			<img src="/logos/laif-logo.png" alt="Laif" class="bar-logo" />
+			<span class="bar-title">Panel de Administración</span>
+
+			{#if dbReady}
+				<div class="visitors-pill">
+					<span class="live-dot"></span>
+					<strong>{activeVisitors}</strong>
+					<span>visitantes activos</span>
+				</div>
+			{:else}
+				<div class="visitors-pill error-pill">
+					<span>⚠ Sin conexión a Firestore</span>
+				</div>
+			{/if}
+			<button class="btn-logout" on:click={logout}>Cerrar sesión</button>
 		</header>
 
-		<div class="admin-content">
-			<h2 class="section-title">Gestión de Videos por Segmento</h2>
-			<p class="section-hint">
-				Ingresa una URL de video (Firebase Storage, YouTube, Twitch) o sube un archivo directamente.
-				Los cambios se reflejan en la app inmediatamente.
-			</p>
+		<div class="content">
+			<!-- Error de conexión global -->
+			{#if dbError}
+				<div class="alert-box">
+					<strong>Error de base de datos:</strong> {dbError}
+				</div>
+			{/if}
 
-			<div class="video-grid">
-				{#each videoEntries as entry (entry.key)}
-					<div class="video-card" style="border-top: 4px solid {entry.bgColor}">
+			<!-- Cabecera de sección -->
+			<div class="section-head">
+				<h2>Videos por Segmento</h2>
+				<p>
+					Edita la URL o sube un archivo. Los cambios se guardan en CockroachDB y la app los
+					carga automáticamente.
+				</p>
+			</div>
+
+			<!-- Grid de tarjetas -->
+			<div class="grid">
+				{#each entries as entry, i (entry.key)}
+					<div class="card" style="border-top: 4px solid {entry.bgColor}">
+						<!-- Cabecera de tarjeta -->
 						<div class="card-header">
-							<img src={entry.icon} alt={entry.title} class="segment-icon" />
+							<img src={entry.icon} alt={entry.title} class="seg-icon" />
 							<h3>{entry.title}</h3>
+							{#if isDirty(i)}
+								<span class="dirty-badge">sin guardar</span>
+							{/if}
 						</div>
 
-						<div class="field-group">
-							<label for="main-{entry.key}">URL principal del video</label>
+						<!-- URL principal -->
+						<div class="field">
+							<label for="main-{entry.key}">Video principal</label>
 							<input
 								id="main-{entry.key}"
-								type="text"
-								placeholder="https://..."
-								bind:value={entry.mainVideoSrc}
+								type="url"
+								placeholder="https://… (YouTube, Twitch, Firebase Storage)"
+								bind:value={entries[i].mainVideoSrc}
 							/>
 						</div>
 
-						<div class="field-group">
-							<label for="alt-{entry.key}">URL alternativa</label>
+						<!-- URL alternativa -->
+						<div class="field">
+							<label for="alt-{entry.key}">Video alternativo</label>
 							<input
 								id="alt-{entry.key}"
-								type="text"
-								placeholder="https://..."
-								bind:value={entry.altVideoSrc}
+								type="url"
+								placeholder="https://…"
+								bind:value={entries[i].altVideoSrc}
 							/>
 						</div>
 
+						<!-- Barra de progreso de subida -->
+						{#if entry.uploading}
+							<div class="upload-status">
+								<div class="progress-track">
+									<div class="progress-bar" style="width:{entry.uploadProgress}%"></div>
+								</div>
+								<span class="progress-label">{entry.uploadProgress}%</span>
+							</div>
+						{/if}
+
+						<!-- Error por tarjeta -->
+						{#if entry.error}
+							<p class="card-error">⚠ {entry.error}</p>
+						{/if}
+
+						<!-- Acciones -->
 						<div class="card-actions">
-							<label class="btn-upload" class:disabled={entry.uploading}>
+							<!-- Subir archivo -->
+							<label
+								class="btn-upload"
+								class:disabled={entry.uploading || !dbReady}
+								title={!dbReady ? 'Base de datos no conectada' : ''}
+							>
 								{#if entry.uploading}
-									Subiendo {entry.uploadProgress}%
+									Subiendo…
 								{:else}
-									Subir archivo
+									↑ Subir archivo
 								{/if}
 								<input
 									type="file"
-									accept="video/*"
-									style="display:none"
-									on:change={(e) => handleFileUpload(entry, e)}
-									disabled={entry.uploading}
+									accept="video/*,video/mp4,video/webm,video/ogg"
+									hidden
+									on:change={(e) => handleUpload(i, e)}
+									disabled={entry.uploading || !dbReady}
 								/>
 							</label>
 
+							<!-- Restaurar -->
+							<button
+								class="btn-reset"
+								on:click={() => resetEntry(i)}
+								title="Restaurar URL original del código fuente"
+								disabled={entry.uploading || entry.saving}
+							>
+								↩ Reset
+							</button>
+
+							<!-- Guardar -->
 							<button
 								class="btn-save"
-								class:saving={entry.saving}
-								class:saved={entry.saved}
-								on:click={() => saveVideoUrl(entry)}
-								disabled={entry.saving || entry.uploading}
+								class:is-saving={entry.saving}
+								class:is-saved={entry.saved}
+								on:click={() => saveEntry(i)}
+								disabled={entry.saving || entry.uploading || !dbReady}
 							>
 								{#if entry.saving}
 									Guardando…
 								{:else if entry.saved}
-									¡Guardado!
+									✓ Guardado
 								{:else}
 									Guardar
 								{/if}
 							</button>
 						</div>
 
-						{#if entry.uploading}
-							<div class="progress-bar">
-								<div class="progress-fill" style="width: {entry.uploadProgress}%"></div>
-							</div>
+						<!-- URL actualmente en producción -->
+						{#if entry.savedMain && entry.savedMain !== staticData[entry.key]?.mainVideoSrc}
+							<details class="saved-url-info">
+								<summary>URL guardada en Firestore</summary>
+								<p class="saved-url">{entry.savedMain}</p>
+							</details>
 						{/if}
 					</div>
 				{/each}
 			</div>
-
-			<p class="firestore-note">
-				Nota: Asegúrate de tener Firestore habilitado en tu proyecto de Firebase y las reglas de
-				seguridad configuradas para permitir lectura y escritura.
-			</p>
 		</div>
 	</div>
 {/if}
 
 <style>
-	/* Login */
+	/* ── Password toggle ────────────────────── */
+	.password-wrap {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+	.password-wrap input {
+		padding-right: 2.75rem !important;
+		width: 100%;
+	}
+	.eye-btn {
+		position: absolute;
+		right: 0.75rem;
+		background: none;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+		color: #666;
+		display: flex;
+		align-items: center;
+		transition: color 0.15s;
+		flex-shrink: 0;
+	}
+	.eye-btn:hover { color: #aaa; }
+	.eye-btn svg { width: 18px; height: 18px; }
+
+	/* ── Login ───────────────────────────────── */
 	.login-screen {
 		min-height: 100vh;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: #0f0f0f;
-		padding: 1rem;
+		background: #0d0d0d;
+		padding: 1.5rem;
 	}
 	.login-card {
-		background: #1c1c1c;
+		background: #1a1a1a;
+		border: 1px solid #2a2a2a;
 		border-radius: 20px;
 		padding: 2.5rem 2rem;
-		max-width: 380px;
 		width: 100%;
+		max-width: 380px;
 		text-align: center;
-		border: 1px solid #333;
 	}
 	.login-logo {
-		width: 80px;
+		width: 72px;
 		margin: 0 auto 1.5rem;
 		display: block;
 	}
 	.login-card h1 {
-		color: white;
-		font-size: 1rem;
-		text-transform: uppercase;
-		letter-spacing: 2px;
-		margin: 0 0 1.5rem;
-	}
-	.input-group {
-		margin-bottom: 1.25rem;
-	}
-	.input-group input {
-		width: 100%;
-		padding: 0.85rem 1rem;
-		border-radius: 10px;
-		border: 1px solid #444;
-		background: #2a2a2a;
-		color: white;
-		font-size: 1rem;
-		outline: none;
-		transition: border 0.2s;
-	}
-	.input-group input:focus {
-		border-color: #758a6b;
-	}
-	.error {
-		color: #ff6b6b;
-		font-size: 0.8rem;
-		margin: 0.5rem 0 0;
-		text-align: left;
-	}
-	.btn-login {
-		width: 100%;
-		padding: 0.9rem;
-		border-radius: 50px;
-		border: none;
-		background: #758a6b;
-		color: white;
+		color: #fff;
 		font-size: 0.9rem;
 		text-transform: uppercase;
-		letter-spacing: 1.5px;
-		cursor: pointer;
-		transition: background 0.25s;
-		font-family: inherit;
-	}
-	.btn-login:hover {
-		background: #8fa483;
+		letter-spacing: 2.5px;
+		margin: 0 0 1.75rem;
 	}
 
-	/* Admin shell */
-	.admin-shell {
+	/* ── Shell ───────────────────────────────── */
+	.shell {
 		min-height: 100vh;
-		background: #0f0f0f;
-		color: white;
+		background: #0d0d0d;
+		color: #fff;
 	}
-	.admin-header {
+
+	/* ── Top bar ─────────────────────────────── */
+	.top-bar {
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		padding: 1rem 2rem;
-		background: #1c1c1c;
-		border-bottom: 1px solid #333;
+		padding: 0.85rem 1.5rem;
+		background: #161616;
+		border-bottom: 1px solid #2a2a2a;
 		flex-wrap: wrap;
 	}
-	.header-logo {
-		width: 40px;
+	.bar-logo { width: 36px; flex-shrink: 0; }
+	.btn-logout {
+		background: none;
+		border: 1px solid #3a3a3a;
+		border-radius: 50px;
+		padding: 0.3rem 0.85rem;
+		color: #777;
+		font-size: 0.72rem;
+		text-transform: uppercase;
+		letter-spacing: 0.8px;
+		cursor: pointer;
+		font-family: inherit;
+		transition: all 0.18s;
+		flex-shrink: 0;
 	}
-	.admin-header h1 {
-		color: white;
-		font-size: 1rem;
+	.btn-logout:hover {
+		border-color: #666;
+		color: #bbb;
+	}
+	.bar-title {
+		flex: 1;
+		font-size: 0.8rem;
 		text-transform: uppercase;
 		letter-spacing: 2px;
-		margin: 0;
-		flex: 1;
+		color: #ddd;
 	}
-	.visitors-badge {
+	.visitors-pill {
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
-		background: #2a2a2a;
-		border: 1px solid #444;
+		gap: 0.45rem;
+		background: #1e2a1e;
+		border: 1px solid #2e4a2e;
 		border-radius: 50px;
-		padding: 0.4rem 1rem;
+		padding: 0.35rem 0.9rem;
+		font-size: 0.78rem;
+		color: #7dba7d;
 	}
-	.dot {
-		width: 8px;
-		height: 8px;
+	.error-pill {
+		background: #2a1e1e;
+		border-color: #4a2e2e;
+		color: #ba7d7d;
+	}
+	.live-dot {
+		width: 7px;
+		height: 7px;
 		border-radius: 50%;
 		background: #4caf50;
-		animation: pulse 2s ease infinite;
+		flex-shrink: 0;
+		animation: blink 2s ease infinite;
 	}
-	@keyframes pulse {
+	@keyframes blink {
 		0%, 100% { opacity: 1; }
-		50% { opacity: 0.4; }
-	}
-	.visitors-count {
-		font-size: 1.1rem;
-		font-weight: bold;
-		color: #4caf50;
-	}
-	.visitors-label {
-		font-size: 0.75rem;
-		color: #aaa;
-		text-transform: uppercase;
-		letter-spacing: 1px;
+		50% { opacity: 0.35; }
 	}
 
-	/* Content */
-	.admin-content {
-		padding: 2rem;
+	/* ── Content ─────────────────────────────── */
+	.content {
+		padding: 1.75rem 1.5rem;
 		max-width: 1400px;
 		margin: 0 auto;
 	}
-	.section-title {
-		color: white;
-		font-size: 1rem;
-		text-transform: uppercase;
-		letter-spacing: 2px;
-		margin: 0 0 0.5rem;
-	}
-	.section-hint {
-		color: #888;
+
+	/* ── Alert box ───────────────────────────── */
+	.alert-box {
+		background: #2a1a1a;
+		border: 1px solid #5a2a2a;
+		border-radius: 10px;
+		padding: 1rem 1.25rem;
+		margin-bottom: 1.5rem;
 		font-size: 0.8rem;
-		margin: 0 0 2rem;
+		color: #e09090;
+		line-height: 1.6;
 	}
 
-	/* Video grid */
-	.video-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-		gap: 1.25rem;
-		margin-bottom: 2rem;
+	/* ── Section head ────────────────────────── */
+	.section-head { margin-bottom: 1.5rem; }
+	.section-head h2 {
+		color: #fff;
+		font-size: 0.9rem;
+		text-transform: uppercase;
+		letter-spacing: 2px;
+		margin: 0 0 0.3rem;
 	}
-	.video-card {
-		background: #1c1c1c;
+	.section-head p { color: #666; font-size: 0.78rem; margin: 0; }
+
+	/* ── Grid ────────────────────────────────── */
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		gap: 1.1rem;
+	}
+
+	/* ── Card ────────────────────────────────── */
+	.card {
+		background: #1a1a1a;
+		border: 1px solid #2a2a2a;
 		border-radius: 12px;
-		padding: 1.25rem;
-		border: 1px solid #333;
+		padding: 1.1rem 1.1rem 1rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
+		gap: 0.7rem;
 	}
 	.card-header {
 		display: flex;
 		align-items: center;
-		gap: 0.75rem;
+		gap: 0.65rem;
 	}
-	.segment-icon {
-		width: 36px;
-		height: 36px;
+	.seg-icon {
+		width: 32px;
+		height: 32px;
 		object-fit: contain;
 		border-radius: 6px;
+		flex-shrink: 0;
 	}
 	.card-header h3 {
-		color: white;
-		font-size: 0.9rem;
+		color: #fff;
+		font-size: 0.8rem;
 		text-transform: uppercase;
 		letter-spacing: 1px;
 		margin: 0;
+		flex: 1;
 	}
-	.field-group {
-		display: flex;
-		flex-direction: column;
-		gap: 0.3rem;
-	}
-	.field-group label {
-		font-size: 0.7rem;
-		color: #888;
+	.dirty-badge {
+		font-size: 0.65rem;
+		background: #3a2e14;
+		border: 1px solid #7a5a14;
+		color: #d4a84b;
+		border-radius: 50px;
+		padding: 0.15rem 0.5rem;
 		text-transform: uppercase;
-		letter-spacing: 1px;
+		letter-spacing: 0.5px;
+		flex-shrink: 0;
 	}
-	.field-group input {
-		padding: 0.6rem 0.75rem;
+
+	/* ── Fields ──────────────────────────────── */
+	.field { display: flex; flex-direction: column; gap: 0.25rem; }
+	.field label {
+		font-size: 0.67rem;
+		color: #777;
+		text-transform: uppercase;
+		letter-spacing: 0.8px;
+	}
+	.field input {
+		background: #222;
+		border: 1px solid #383838;
 		border-radius: 8px;
-		border: 1px solid #444;
-		background: #2a2a2a;
-		color: white;
+		padding: 0.55rem 0.75rem;
+		color: #eee;
 		font-size: 0.8rem;
 		outline: none;
-		transition: border 0.2s;
+		transition: border-color 0.18s;
 		width: 100%;
+		font-family: inherit;
 	}
-	.field-group input:focus {
+	.field input:focus {
 		border-color: #758a6b;
 	}
+	.field-error {
+		color: #ff7070;
+		font-size: 0.75rem;
+		margin: 0.3rem 0 0;
+		text-align: left;
+	}
+	.card-error {
+		font-size: 0.72rem;
+		color: #ff7070;
+		margin: 0;
+		background: #2a1a1a;
+		border: 1px solid #5a2a2a;
+		border-radius: 6px;
+		padding: 0.4rem 0.6rem;
+	}
+
+	/* ── Upload progress ─────────────────────── */
+	.upload-status {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.progress-track {
+		flex: 1;
+		height: 5px;
+		background: #2a2a2a;
+		border-radius: 5px;
+		overflow: hidden;
+	}
+	.progress-bar {
+		height: 100%;
+		background: #758a6b;
+		border-radius: 5px;
+		transition: width 0.25s;
+	}
+	.progress-label {
+		font-size: 0.72rem;
+		color: #888;
+		min-width: 30px;
+		text-align: right;
+	}
+
+	/* ── Card actions ────────────────────────── */
 	.card-actions {
 		display: flex;
-		gap: 0.5rem;
-		margin-top: 0.25rem;
+		gap: 0.4rem;
+		margin-top: 0.1rem;
 	}
+
 	.btn-upload {
-		flex: 1;
-		padding: 0.65rem;
+		flex: 1.6;
+		padding: 0.6rem 0.5rem;
 		border-radius: 8px;
-		border: 1px dashed #555;
+		border: 1px dashed #444;
 		background: transparent;
-		color: #aaa;
-		font-size: 0.75rem;
+		color: #999;
+		font-size: 0.72rem;
 		text-align: center;
 		cursor: pointer;
-		transition: all 0.2s;
+		transition: all 0.18s;
 		font-family: inherit;
 		text-transform: uppercase;
-		letter-spacing: 1px;
+		letter-spacing: 0.8px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -507,56 +772,88 @@
 		color: #8fa483;
 	}
 	.btn-upload.disabled {
-		opacity: 0.5;
+		opacity: 0.4;
 		cursor: not-allowed;
+		pointer-events: none;
 	}
+
+	.btn-reset {
+		padding: 0.6rem 0.65rem;
+		border-radius: 8px;
+		border: 1px solid #383838;
+		background: transparent;
+		color: #777;
+		font-size: 0.72rem;
+		cursor: pointer;
+		transition: all 0.18s;
+		font-family: inherit;
+		text-transform: uppercase;
+		letter-spacing: 0.8px;
+		white-space: nowrap;
+	}
+	.btn-reset:hover:not(:disabled) {
+		border-color: #666;
+		color: #aaa;
+	}
+	.btn-reset:disabled { opacity: 0.4; cursor: not-allowed; }
+
 	.btn-save {
-		flex: 1;
-		padding: 0.65rem;
+		flex: 1.2;
+		padding: 0.6rem 0.5rem;
 		border-radius: 8px;
 		border: none;
 		background: #758a6b;
-		color: white;
-		font-size: 0.75rem;
+		color: #fff;
+		font-size: 0.72rem;
 		text-transform: uppercase;
-		letter-spacing: 1px;
+		letter-spacing: 0.8px;
 		cursor: pointer;
-		transition: all 0.2s;
+		transition: all 0.18s;
+		font-family: inherit;
+		white-space: nowrap;
+	}
+	.btn-save:hover:not(:disabled) { background: #8fa483; }
+	.btn-save.is-saving { background: #444; cursor: not-allowed; }
+	.btn-save.is-saved { background: #3a7a3a; }
+	.btn-save:disabled { opacity: 0.45; cursor: not-allowed; }
+
+	/* Botón login */
+	.btn-primary {
+		width: 100%;
+		padding: 0.9rem;
+		border: none;
+		border-radius: 50px;
+		background: #758a6b;
+		color: #fff;
+		font-size: 0.85rem;
+		text-transform: uppercase;
+		letter-spacing: 1.5px;
+		cursor: pointer;
+		transition: background 0.2s;
 		font-family: inherit;
 	}
-	.btn-save:hover:not(:disabled) {
-		background: #8fa483;
-	}
-	.btn-save.saving {
-		background: #555;
-		cursor: not-allowed;
-	}
-	.btn-save.saved {
-		background: #4caf50;
-	}
-	.btn-save:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-	.progress-bar {
-		height: 4px;
-		background: #333;
-		border-radius: 4px;
-		overflow: hidden;
-	}
-	.progress-fill {
-		height: 100%;
-		background: #758a6b;
-		transition: width 0.3s;
-		border-radius: 4px;
-	}
-	.firestore-note {
+	.btn-primary:hover { background: #8fa483; }
+
+	/* ── Saved URL info ──────────────────────── */
+	.saved-url-info {
+		font-size: 0.7rem;
 		color: #666;
-		font-size: 0.72rem;
-		border: 1px solid #333;
-		border-radius: 8px;
-		padding: 0.75rem 1rem;
-		line-height: 1.6;
-		margin: 0;
 	}
+	.saved-url-info summary {
+		cursor: pointer;
+		color: #555;
+		font-size: 0.68rem;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+	.saved-url {
+		margin: 0.3rem 0 0;
+		color: #555;
+		word-break: break-all;
+		font-size: 0.68rem;
+		background: #1a1a1a;
+		border-radius: 4px;
+		padding: 0.3rem 0.5rem;
+	}
+
 </style>

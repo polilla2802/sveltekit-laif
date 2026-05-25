@@ -12,3 +12,15 @@ model User {
   email String  @unique
   name  String?
 }
+
+model VideoUrl {
+  id           String @id
+  mainVideoSrc String
+  altVideoSrc  String
+}
+
+model Presence {
+  id       String   @id
+  path     String
+  lastSeen DateTime @default(now())
+}

@@ -27,6 +27,9 @@ export default defineConfig({
     "process.env.VITE_FIREBASE_APP_ID": JSON.stringify(
       process.env.VITE_FIREBASE_APP_ID
     ),
+    "process.env.VITE_MEASUREMENT_ID": JSON.stringify(
+      process.env.VITE_MEASUREMENT_ID
+    ),
     "process.env.OPENAI_KEY": JSON.stringify(
       process.env.OPENAI_KEY
     ),
