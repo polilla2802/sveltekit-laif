@@ -389,16 +389,6 @@
 							/>
 						</div>
 
-						<!-- Barra de progreso de subida -->
-						{#if entry.uploading}
-							<div class="upload-status">
-								<div class="progress-track">
-									<div class="progress-bar" style="width:{entry.uploadProgress}%"></div>
-								</div>
-								<span class="progress-label">{entry.uploadProgress}%</span>
-							</div>
-						{/if}
-
 						<!-- Error por tarjeta -->
 						{#if entry.error}
 							<p class="card-error">⚠ {entry.error}</p>
@@ -406,32 +396,12 @@
 
 						<!-- Acciones -->
 						<div class="card-actions">
-							<!-- Subir archivo -->
-							<label
-								class="btn-upload"
-								class:disabled={entry.uploading || !dbReady}
-								title={!dbReady ? 'Base de datos no conectada' : ''}
-							>
-								{#if entry.uploading}
-									Subiendo…
-								{:else}
-									↑ Subir archivo
-								{/if}
-								<input
-									type="file"
-									accept="video/*,video/mp4,video/webm,video/ogg"
-									hidden
-									on:change={(e) => handleUpload(i, e)}
-									disabled={entry.uploading || !dbReady}
-								/>
-							</label>
-
 							<!-- Restaurar -->
 							<button
 								class="btn-reset"
 								on:click={() => resetEntry(i)}
 								title="Restaurar URL original del código fuente"
-								disabled={entry.uploading || entry.saving}
+								disabled={entry.saving}
 							>
 								↩ Reset
 							</button>
@@ -442,7 +412,7 @@
 								class:is-saving={entry.saving}
 								class:is-saved={entry.saved}
 								on:click={() => saveEntry(i)}
-								disabled={entry.saving || entry.uploading || !dbReady}
+								disabled={entry.saving || !dbReady}
 							>
 								{#if entry.saving}
 									Guardando…
@@ -716,31 +686,6 @@
 		padding: 0.4rem 0.6rem;
 	}
 
-	/* ── Upload progress ─────────────────────── */
-	.upload-status {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-	.progress-track {
-		flex: 1;
-		height: 5px;
-		background: #2a2a2a;
-		border-radius: 5px;
-		overflow: hidden;
-	}
-	.progress-bar {
-		height: 100%;
-		background: #758a6b;
-		border-radius: 5px;
-		transition: width 0.25s;
-	}
-	.progress-label {
-		font-size: 0.72rem;
-		color: #888;
-		min-width: 30px;
-		text-align: right;
-	}
 
 	/* ── Card actions ────────────────────────── */
 	.card-actions {
@@ -749,33 +694,6 @@
 		margin-top: 0.1rem;
 	}
 
-	.btn-upload {
-		flex: 1.6;
-		padding: 0.6rem 0.5rem;
-		border-radius: 8px;
-		border: 1px dashed #444;
-		background: transparent;
-		color: #999;
-		font-size: 0.72rem;
-		text-align: center;
-		cursor: pointer;
-		transition: all 0.18s;
-		font-family: inherit;
-		text-transform: uppercase;
-		letter-spacing: 0.8px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.btn-upload:hover:not(.disabled) {
-		border-color: #758a6b;
-		color: #8fa483;
-	}
-	.btn-upload.disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-		pointer-events: none;
-	}
 
 	.btn-reset {
 		padding: 0.6rem 0.65rem;
