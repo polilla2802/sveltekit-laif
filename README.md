@@ -4,7 +4,7 @@ Mobile-first content platform I built for a client. It works as a curated video 
 
 **Live site:** [laif.network](https://laif.network)
 
-![LAIF home](./docs/00-screenshot-home.jpg)
+![LAIF home](./docs/screenshot-home.jpg)
 
 ---
 
@@ -36,7 +36,7 @@ There's also a floating "Transmisión en vivo" button that connects directly to 
 
 | Home (video mosaic) | Category view | Twitch offline state |
 |---|---|---|
-| ![home](./docs/01-home.jpg) | ![category](./docs/02-category.jpg) | ![twitch](./docs/03-twitch.jpg) |
+| ![home](./docs/home.jpg) | ![category](./docs/category.jpg) | ![twitch](./docs/twitch.jpg) |
 
 ## Running it locally
 
